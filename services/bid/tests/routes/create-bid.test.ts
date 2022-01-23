@@ -3,7 +3,7 @@ import request from 'supertest';
 import { v4 as uuidv4 } from 'uuid';
 
 import { app } from '../../src/app';
-import { Listing } from '../../src/models';
+import { Listing, User } from '../../src/models';
 import { signup } from '../signup-helper';
 
 const createListing = async (
@@ -22,11 +22,53 @@ const createListing = async (
   });
 };
 
+/********************/
+const createUser = async (
+    userId: string = uuidv4(),
+) => {
+  return await User.create({
+    id: uuidv4(),
+    name: 'sumair',
+    email: 'abc@xyz.com',
+    avatar: 'test',
+    isRegister: true,
+    createdAt: new Date(),
+    version: 1,
+  });
+};
+/********************/
+
+
 it('responds with a 401 if the user is not authenticated', async () => {
   const listing = await createListing();
 
   await request(app).post(`/api/bids/${listing.slug}`).expect(401);
 });
+
+/********************/
+it('responds with a 404 if the user is not found', async () => {
+  const { cookie } = signup();
+  const listing = await createListing();
+
+  await request(app)
+    .post(`/api/bids/${listing.id}`)
+    .set('Cookie', cookie)
+    .send({ amount: 1 })
+    .expect(404);
+});
+
+it('responds with a 400 if the user is not registered', async () => {
+  const { cookie } = signup();
+  const listing = await createListing();
+  const user = await createUser();
+  user.isRegister=false;
+  await request(app)
+    .post(`/api/bids/${listing.id}`)
+    .set('Cookie', cookie)
+    .send({ amount: 1 ,user: user})
+    .expect(400);
+});
+/********************/
 
 it('responds with a 404 if there is no listing with the given slug', async () => {
   const { cookie } = signup();
@@ -41,32 +83,35 @@ it('responds with a 404 if there is no listing with the given slug', async () =>
 it('responds with a 400 if the bid amount is less than the current price', async () => {
   const { cookie } = signup();
   const listing = await createListing();
+  const user = await createUser();
 
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1 })
+    .send({ amount: 1 , user: user})
     .expect(400);
 });
 
 it('responds with a 400 if the auction has ended', async () => {
   const { cookie } = signup();
   const listing = await createListing(uuidv4(), ListingStatus.Expired);
+  const user = await createUser();
 
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1000 })
+    .send({ amount: 1000 , user: user})
     .expect(400);
 });
 
 it('responds with with a 401 if a user atempts to bid on there own auction', async () => {
   const { cookie, id } = signup();
   const listing = await createListing(id);
+  const user = await createUser();
 
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1000 })
+    .send({ amount: 1000 , user: user})
     .expect(400);
 });

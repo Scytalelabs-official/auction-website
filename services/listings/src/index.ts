@@ -8,7 +8,10 @@ import { UserCreatedListener } from './events/listeners/user-created-listener';
 import { db } from './models';
 import { natsWrapper } from './nats-wrapper';
 import { socketIOWrapper } from './socket-io-wrapper';
-
+/**********/
+import dotenv from 'dotenv';
+dotenv.config();
+/*********/
 (async () => {
   try {
     console.log('The listings service has started');
