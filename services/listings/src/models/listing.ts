@@ -11,6 +11,14 @@ export interface ListingAttributes {
   expiresAt: Date;
   startPrice: number;
   currentWinnerId?: string;
+  /******/
+  paymentConfirmation: number;
+  massOfItem: number;
+  taxByMassOfItem: number;
+  salesTax: number;
+  exciseRate: number;
+  totalPrice: number;
+  /******/
   userId: string;
   title: string;
   description: string;
@@ -48,6 +56,37 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.UUID,
         defaultValue: null,
       },
+      /*************/
+      paymentConfirmation: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+
+      massOfItem: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      taxByMassOfItem: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      salesTax: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+
+      exciseRate: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      totalPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      /***************/
       status: {
         type: DataTypes.ENUM,
         defaultValue: ListingStatus.Active,

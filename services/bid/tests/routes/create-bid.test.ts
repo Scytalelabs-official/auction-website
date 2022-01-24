@@ -61,7 +61,7 @@ it('responds with a 400 if the user is not registered', async () => {
   const { cookie } = signup();
   const listing = await createListing();
   const user = await createUser();
-  user.isRegister=false;
+  await user.set('isRegister',false);
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)

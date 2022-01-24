@@ -6,6 +6,9 @@ export interface ListingAttributes {
   status?: ListingStatus;
   amount: number;
   winnerId: string;
+  /**********/
+  paymentConfirmation: Boolean;
+  /**********/
   version?: number;
 }
 
@@ -42,6 +45,12 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      /**********/
+      paymentConfirmation: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      /**********/
     },
     {
       version: true,
