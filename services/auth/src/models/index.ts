@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 
 import { UserFactory } from './user';
+import { KycFactory } from './kyc';
 
 const db =
   process.env.NODE_ENV == 'test'
@@ -11,5 +12,6 @@ const db =
       });
 
 const User = UserFactory(db);
+const Kyc = KycFactory(db);
 
-export { db, User };
+export { db, User, Kyc };

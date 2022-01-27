@@ -12,7 +12,7 @@ export interface ListingAttributes {
   startPrice: number;
   currentWinnerId?: string;
   /******/
-  paymentConfirmation: number;
+  paymentConfirmation: Boolean;
   massOfItem: number;
   taxByMassOfItem: number;
   salesTax: number;

@@ -1,4 +1,3 @@
 {
-    "prettier.enableDebugLogs": true,
-    "prettier.endOfLine": "auto"
+  "prettier.enableDebugLogs": true
 }
