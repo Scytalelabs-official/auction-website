@@ -7,6 +7,9 @@ export interface UserCreatedEvent {
     name: string;
     email: string;
     avatar: string;
+    /**********/
+    isRegister: boolean;
+    /**********/
     version: number;
   };
 }

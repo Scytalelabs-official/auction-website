@@ -11,7 +11,7 @@ import { body } from 'express-validator';
 import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
 import { Listing, Payment } from '../models';
 import { natsWrapper } from '../nats-wrapper';
-import { stripe } from '../stripe';
+// import { stripe } from '../stripe';
 
 const router = express.Router();
 
@@ -28,6 +28,14 @@ router.post(
     if (!listing) {
       throw new NotFoundError();
     }
+    /*************/
+    if (listing.paymentConfirmation===false) {
+      // throw new NotFoundError();
+      throw new BadRequestError(
+        'Payment for sold listings require action winners confirmation'
+      );
+    }
+    /*************/
 
     if (listing.status !== ListingStatus.AwaitingPayment) {
       throw new BadRequestError(
@@ -41,15 +49,17 @@ router.post(
       );
     }
 
-    const charge = await stripe.charges.create({
-      currency: 'usd',
-      amount: listing.amount,
-      source: token,
-    });
+    /*************/
+    // const charge = await stripe.charges.create({
+    //   currency: 'usd',
+    //   amount: listing.amount,
+    //   source: token,
+    // });
+    /*************/
 
     const payment = await Payment.create({
       listingId: listing.id!,
-      stripeId: charge.id,
+      // stripeId: charge.id,
     });
 
     new PaymentCreatedPublisher(natsWrapper.client).publish({

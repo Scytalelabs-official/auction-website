@@ -1,4 +1,22 @@
-import cloudinary from 'cloudinary';
+/**********/
+import dotenv from 'dotenv';
+dotenv.config();
+// require("dotenv").config();
+// import { config } from "dotenv";
+// config();
+// require('dotenv').config({
+//     path: '../.env'
+// });
+/*********/
+// import cloudinary from 'cloudinary';
+// var cloudinary = require('cloudinary').v2;
+// import cloudinary , {v2} from 'cloudinary';
+// var cloudinary = require('cloudinary').v2;
+var local_cloudinary = require('cloudinary').v2;
+
+
+
+
 
 import { app } from './app';
 import { BidCreatedListener } from './events/listeners/bid-created-listener';
@@ -8,6 +26,9 @@ import { UserCreatedListener } from './events/listeners/user-created-listener';
 import { db } from './models';
 import { natsWrapper } from './nats-wrapper';
 import { socketIOWrapper } from './socket-io-wrapper';
+
+
+
 
 (async () => {
   try {
@@ -45,11 +66,23 @@ import { socketIOWrapper } from './socket-io-wrapper';
       throw new Error('NATS_CLUSTER_ID must be defined');
     }
 
+    //  console.log("Cloud Name", process.env.CLOUDINARY_CLOUD_NAME);
+    // console.log("Api Key", process.env.CLOUDINARY_API_KEY);
+    // console.log("Api Secret", process.env.CLOUDINARY_API_SECRET);
     // @ts-ignore
-    await cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
+    // await cloudinary.config({
+    //   cloud_name: process.env.CLOUDINARY_CLOUD_NAME /*'scytalelabs'*/,
+    //   api_key: process.env.CLOUDINARY_API_KEY /*'432183885194623'*/,
+    //   api_secret:
+    //     process.env.CLOUDINARY_API_SECRET /*'mZAxNn0YNm7YxPOMAvrBP0UIUfU'*/,
+    //     secure: true
+
+    // });
+    local_cloudinary.config({
+        cloud_name: 'scytalelabs>',
+        api_key: '432183885194623',
+        api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+        secure: true
     });
 
     await natsWrapper.connect(

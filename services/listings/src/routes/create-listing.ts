@@ -1,9 +1,14 @@
 import {
   BadRequestError,
+  NotFoundError,
   requireAuth,
   validateRequest,
 } from '@jjmauction/common';
 import cloudinary from 'cloudinary';
+// import cloudinary , {v2} from 'cloudinary';
+var local_cloudinary = require('cloudinary').v2;
+
+
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -19,7 +24,12 @@ const storage = multer.diskStorage({
     callback(null, Date.now() + file.originalname);
   },
 });
-
+local_cloudinary.config({
+        cloud_name: 'scytalelabs',
+        api_key: '432183885194623',
+        api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+        secure: true
+    });
 const upload = multer({ storage: storage });
 
 router.post(
@@ -49,7 +59,19 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     await db.transaction(async (transaction) => {
-      const { price, title, description, expiresAt } = req.body;
+      const {
+        price,
+        title,
+        description,
+        expiresAt,
+        /*********/
+        paymentConfirmation,
+        massOfItem,
+        taxByMassOfItem, //will get this from a table that contains the tax by mass information
+        salesTax,
+        exciseRate,
+        /*********/
+      } = req.body;
 
       // @ts-ignore
       const result = await cloudinary.v2.uploader.upload(req.file.path, {
@@ -60,11 +82,38 @@ router.post(
       });
 console.log("HELLO");
 
+      /*************/
+
+      let taxAmount;
+      if (salesTax <= 0 || salesTax >= 100) {
+        // Need consultancy about higher rate
+        throw new BadRequestError('Invalid sales tax rate');
+
+        // throw new BadRequestError('Sales tax ambiguous value given');
+      } else {
+        taxAmount = (salesTax * price) / 100; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
+      }
+
+      if ((taxByMassOfItem <=0 || taxByMassOfItem>=100) && (exciseRate <=0 || exciseRate>=100)) {
+        throw new BadRequestError('Excise Rate not specified');
+        // throw new BadRequestError('There must be one tax type specified');
+      }
+      /*************/
+
       const listing = await Listing.create(
         {
           userId: req.currentUser.id,
           startPrice: price,
           currentPrice: price,
+          /******/
+          paymentConfirmation,
+          massOfItem,
+          taxByMassOfItem,
+          salesTax,
+          exciseRate,
+          totalPrice:
+            price + (exciseRate * price) / 100 + taxAmount + taxByMassOfItem, //https://www.investopedia.com/terms/e/excisetax.asp
+          /******/
           title,
           description,
           expiresAt,

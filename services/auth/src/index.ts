@@ -1,6 +1,10 @@
 import { app } from './app';
 import { db } from './models';
 import { natsWrapper } from './nats-wrapper';
+/**********/
+import dotenv from 'dotenv';
+dotenv.config();
+/*********/
 
 (async () => {
   try {

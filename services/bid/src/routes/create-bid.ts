@@ -8,7 +8,7 @@ import {
 import express, { Request, Response } from 'express';
 
 import { BidCreatedPublisher } from '../events/publishers/bid-created-publisher';
-import { Bid, Listing, db } from '../models';
+import { Bid, Listing, db, User } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -21,8 +21,24 @@ router.post(
     await db.transaction(async (transaction) => {
       const { amount } = req.body;
       const listingId = req.params.listingId;
-
       const listing = await Listing.findOne({ where: { id: listingId } });
+
+      /*************/
+      const user = req.body.user;
+      // const user = await User.findOne({ where: { id: req.currentUser?.id } });
+
+      if (!user) {
+        throw new NotFoundError();
+        // throw new BadRequestError(
+        //   'user not found'
+        // );
+      }
+       if (user.isRegister === false) {
+        throw new BadRequestError(
+          'Non registered users cannot place bids on the listings'
+        );
+      }
+      /*************/
 
       if (!listing) {
         throw new NotFoundError();

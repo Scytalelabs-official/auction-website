@@ -3,7 +3,7 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 export interface PaymentAttributes {
   id?: string;
   listingId: string;
-  stripeId: string;
+  // stripeId: string;
   version?: number;
 }
 
@@ -31,10 +31,10 @@ const PaymentFactory = (sequelize: Sequelize): PaymentStatic => {
         type: DataTypes.UUID,
         allowNull: true,
       },
-      stripeId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      // stripeId: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
     },
     {
       version: true,

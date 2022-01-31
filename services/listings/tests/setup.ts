@@ -12,7 +12,8 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   jest.clearAllMocks();
-
+  // jest.useFakeTimers()
+  jest.setTimeout(100000);
   await Listing.destroy({
     where: {},
     truncate: true,
