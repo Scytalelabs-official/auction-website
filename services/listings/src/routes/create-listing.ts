@@ -58,6 +58,7 @@ router.post(
           { width: 1280, height: 1280 },
         ],
       });
+console.log("HELLO");
 
       const listing = await Listing.create(
         {
@@ -73,7 +74,7 @@ router.post(
         },
         { transaction }
       );
-
+      console.log("HELLO");
       new ListingCreatedPublisher(natsWrapper.client).publish({
         id: listing.id,
         userId: req.currentUser.id,
