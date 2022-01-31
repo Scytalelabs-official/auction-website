@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import xw from 'xwind/macro';
 import * as Yup from 'yup';
 
+import BlockPass from './blockpass';
 import AppContext from '../../context/app-context';
 
 const StyledErrorMessage = styled.div(xw`
@@ -38,6 +39,7 @@ const validationSchema = Yup.object({
 
 const SignUp = () => {
   const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
   const { setAuth } = useContext(AppContext);
   const router = useRouter();
 
@@ -46,9 +48,21 @@ const SignUp = () => {
 
     try {
       const { data } = await axios.post('/api/auth/signup', body);
-      setAuth({ isAuthenticated: true, currentUser: data });
-      toast.success('Sucessfully signed up!');
-      router.push('/');
+      console.log('data',data);
+      if(data.isRegister)
+      {
+        setAuth({ isAuthenticated: true, currentUser: data });
+        toast.success('Sucessfully signed up!');
+        router.push('/');
+      } else {
+        await axios.post('/api/auth/signout');
+        setAuth({ isAuthenticated: false, currentUser: null });
+        toast.success('Sucessfully signed up!');
+        toast.info('Please Fill KYC Form First!');
+        setIsRegister(true)
+      }
+      console.log('data',data);
+
     } catch (err) {
       err.response.data.errors.forEach((err) => toast.error(err.message));
     }
@@ -62,6 +76,9 @@ const SignUp = () => {
         <title>Sign Up | auctionweb.site</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
+      {isRegister ? (
+        <BlockPass />
+    ) : (
       <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md md:w-full">
           <img
@@ -165,7 +182,9 @@ const SignUp = () => {
           </div>
         </div>
       </div>
+    )}
     </>
+    
   );
 };
 
