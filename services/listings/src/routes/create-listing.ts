@@ -5,10 +5,6 @@ import {
   validateRequest,
 } from '@jjmauction/common';
 import cloudinary from 'cloudinary';
-// import cloudinary , {v2} from 'cloudinary';
-var local_cloudinary = require('cloudinary').v2;
-
-
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -16,6 +12,8 @@ import multer from 'multer';
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
 import { Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
+// import cloudinary , {v2} from 'cloudinary';
+// var local_cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
 
@@ -24,12 +22,12 @@ const storage = multer.diskStorage({
     callback(null, Date.now() + file.originalname);
   },
 });
-local_cloudinary.config({
-        cloud_name: 'scytalelabs',
-        api_key: '432183885194623',
-        api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
-        secure: true
-    });
+// local_cloudinary.config({
+//         cloud_name: 'scytalelabs',
+//         api_key: '432183885194623',
+//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//         secure: true
+//     });
 const upload = multer({ storage: storage });
 
 router.post(
@@ -93,7 +91,10 @@ router.post(
         taxAmount = (salesTax * price) / 100; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
       }
 
-      if ((taxByMassOfItem <=0 || taxByMassOfItem>=100) && (exciseRate <=0 || exciseRate>=100)) {
+      if (
+        (taxByMassOfItem <= 0 || taxByMassOfItem >= 100) &&
+        (exciseRate <= 0 || exciseRate >= 100)
+      ) {
         throw new BadRequestError('Excise Rate not specified');
         // throw new BadRequestError('There must be one tax type specified');
       }
