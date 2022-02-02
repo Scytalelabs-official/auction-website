@@ -9,27 +9,28 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
 import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
-import { Listing, Payment } from '../models';
+import { Inventory } from '../models';
 import { natsWrapper } from '../nats-wrapper';
+
 // import { stripe } from '../stripe';
 
 const router = express.Router();
 
 router.post(
-  '/api/payments',
+  '/api/inventory/addItem',
   requireAuth,
-  [body('token').not().isEmpty(), body('listingId').not().isEmpty()],
+  // [body('token').not().isEmpty(), body('listingId').not().isEmpty()],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { token, listingId } = req.body;
+    // const { token, listingId } = req.body;
 
-    const listing = await Listing.findOne({ where: { id: listingId } });
+    // const listing = await Listing.findOne({ where: { id: listingId } });
 
     if (!listing) {
       throw new NotFoundError();
     }
     /*************/
-    if (listing.paymentConfirmation===false) {
+    if (listing.paymentConfirmation === false) {
       // throw new NotFoundError();
       throw new BadRequestError(
         'Payment for sold listings require action winners confirmation'
