@@ -55,19 +55,20 @@ const Sell = () => {
     try {
       body.price *= 100;
       const formData = new FormData();
-      console.log('body',body);
+      console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
       // Display the values
-      for (var value of formData.values()) {
-        console.log(value);
+      // Display the key/value pairs
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
       }
       const { data } = await axios.post('/api/listings', formData);
       toast.success('Sucessfully listed item for sale!');
       Router.push(`/listings/${data.slug}`);
     } catch (err) {
-      console.log('err',err);
-      console.log('err',err.response);
-      
+      console.log('err', err);
+      console.log('err', err.response);
+
       err.response.data.errors.forEach((err) => toast.error(err.message));
     }
 
