@@ -1,10 +1,11 @@
 import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 import { InventoryStatus } from '../../../../common/src/events/types/inventory-status';
+// import SequelizeSlugify from 'sequelize-slugify';
 
 export interface InventoryAttributes {
-  id: string;
-  name: string;
+  id?: string;
+  title: string;
   status?: InventoryStatus;
   price: number;
   massOfItem: number;
@@ -33,7 +34,7 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         unique: true,
         primaryKey: true,
       },
-      name: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
       },

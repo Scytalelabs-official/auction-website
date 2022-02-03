@@ -1,75 +1,99 @@
 import {
   BadRequestError,
-  ListingStatus,
   NotFoundError,
   requireAuth,
   validateRequest,
 } from '@jjmauction/common';
+// import cloudinary from 'cloudinary';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
-import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
-import { Inventory } from '../models';
+import { InventoryItemCreatedPublisher } from '../events/publishers/inventory-item-created-publisher';
+import { Inventory, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
-// import { stripe } from '../stripe';
+// import multer from 'multer';
+
+// import cloudinary , {v2} from 'cloudinary';
+// var local_cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
+
+// const storage = multer.diskStorage({
+//   filename: function (req, file, callback) {
+//     callback(null, Date.now() + file.originalname);
+//   },
+// });
+// local_cloudinary.config({
+//         cloud_name: 'scytalelabs',
+//         api_key: '432183885194623',
+//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//         secure: true
+//     });
+// const upload = multer({ storage: storage });
 
 router.post(
   '/api/inventory/addItem',
   requireAuth,
-  // [body('token').not().isEmpty(), body('listingId').not().isEmpty()],
+  [
+    body('price')
+      .isFloat({ gt: 0 })
+      .withMessage('Price must be greater than 0'),
+    body('massOfItem')
+      .isFloat({ gt: 0 })
+      .withMessage('Mass must be greater than 0'),
+    body('title')
+      .isLength({ min: 3, max: 100 })
+      .withMessage('The item name must be between 5 and 1000 characters'),
+    // body('expiresAt').custom((value) => {
+    //   let enteredDate = new Date(value);
+    //   let tommorowsDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    //   if (enteredDate <= tommorowsDate)
+    //     throw new BadRequestError('Invalid Date');
+    //   return true;
+    // }),
+    body('description')
+      .isLength({ min: 5, max: 500 })
+      .withMessage(
+        'The inventory description must be between 5 and 500 characters'
+      ),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
-    // const { token, listingId } = req.body;
+    await db.transaction(async (transaction) => {
+      const { title, price, massOfItem, description } = req.body;
 
-    // const listing = await Listing.findOne({ where: { id: listingId } });
+      // // @ts-ignore
+      // const result = await cloudinary.v2.uploader.upload(req.file.path, {
+      //   eager: [
+      //     { width: 225, height: 225 },
+      //     { width: 1280, height: 1280 },
+      //   ],
+      // });
 
-    if (!listing) {
-      throw new NotFoundError();
-    }
-    /*************/
-    if (listing.paymentConfirmation === false) {
-      // throw new NotFoundError();
-      throw new BadRequestError(
-        'Payment for sold listings require action winners confirmation'
+      const item = await Inventory.create(
+        {
+          title,
+          price,
+          massOfItem,
+          description,
+        },
+        { transaction }
       );
-    }
-    /*************/
 
-    if (listing.status !== ListingStatus.AwaitingPayment) {
-      throw new BadRequestError(
-        'You can only pay for listings that are sold and awaiting payment'
-      );
-    }
+      new InventoryItemCreatedPublisher(natsWrapper.client).publish({
+        id: item.id,
+        title,
+        price,
+        massOfItem,
+        description,
+        createdAt: new Date(Date.now()),
+        version: item.version,
+      });
 
-    if (listing.winnerId !== req.currentUser!.id) {
-      throw new BadRequestError(
-        'Only auction winners can pay for sold listings'
-      );
-    }
-
-    /*************/
-    // const charge = await stripe.charges.create({
-    //   currency: 'usd',
-    //   amount: listing.amount,
-    //   source: token,
-    // });
-    /*************/
-
-    const payment = await Payment.create({
-      listingId: listing.id!,
-      // stripeId: charge.id,
+      res.status(201).send(item);
     });
-
-    new PaymentCreatedPublisher(natsWrapper.client).publish({
-      id: listing.id!,
-      version: payment.version!,
-    });
-
-    res.status(201).send({ id: payment.id });
   }
 );
 
-export { router as createPaymentRouter };
+export { router as createListingRouter };
