@@ -52,7 +52,7 @@ router.post(
 
       let hashGuid = keccak256(req.body.guid).toString('hex');
       let hashStatus = keccak256(req.body.status).toString('hex');
-      let hashClientId = keccak256(req.body.clientId).toString('hex');
+      let hashClientId = keccak256(req.body.status).toString('hex');req.body.clientId;
       let hashEvent = keccak256(req.body.event).toString('hex');
       let hashRecordId = keccak256(req.body.recordId).toString('hex');
       let hashRefId = keccak256(req.body.refId).toString('hex');
@@ -71,7 +71,7 @@ router.post(
       throw new BadRequestError('User not registered');
     }
 
-    res.status(201).send(currentUser);
+    res.send({ currentUser });
   }
 );
 
