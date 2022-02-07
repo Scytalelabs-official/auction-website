@@ -14,4 +14,5 @@ export enum Subjects {
   EmailCreated = 'email:created',
 
   InventoryItemCreated = 'inventoryItem:created',
+  InventoryItemDeleted = 'inventoryItem:deleted',
 }

@@ -23,9 +23,7 @@ const createListing = async (
 };
 
 /********************/
-const createUser = async (
-    userId: string = uuidv4(),
-) => {
+const createUser = async (userId: string = uuidv4()) => {
   return await User.create({
     id: uuidv4(),
     name: 'sumair',
@@ -37,7 +35,6 @@ const createUser = async (
   });
 };
 /********************/
-
 
 it('responds with a 401 if the user is not authenticated', async () => {
   const listing = await createListing();
@@ -61,11 +58,11 @@ it('responds with a 400 if the user is not registered', async () => {
   const { cookie } = signup();
   const listing = await createListing();
   const user = await createUser();
-  await user.set('isRegister',false);
+  await user.set('isRegister', false);
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1 ,user: user})
+    .send({ amount: 1, user: user })
     .expect(400);
 });
 /********************/
@@ -88,7 +85,7 @@ it('responds with a 400 if the bid amount is less than the current price', async
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1 , user: user})
+    .send({ amount: 1, user: user })
     .expect(400);
 });
 
@@ -100,7 +97,7 @@ it('responds with a 400 if the auction has ended', async () => {
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1000 , user: user})
+    .send({ amount: 1000, user: user })
     .expect(400);
 });
 
@@ -112,6 +109,6 @@ it('responds with with a 401 if a user atempts to bid on there own auction', asy
   await request(app)
     .post(`/api/bids/${listing.id}`)
     .set('Cookie', cookie)
-    .send({ amount: 1000 , user: user})
+    .send({ amount: 1000, user: user })
     .expect(400);
 });

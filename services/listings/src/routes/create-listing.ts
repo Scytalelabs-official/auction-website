@@ -12,6 +12,7 @@ import multer from 'multer';
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
 import { Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
+
 // import cloudinary , {v2} from 'cloudinary';
 // var local_cloudinary = require('cloudinary').v2;
 
@@ -88,15 +89,15 @@ router.post(
 
         // throw new BadRequestError('Sales tax ambiguous value given');
       } else {
-        taxAmount = (salesTax * price) / 100; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
+        taxAmount = (salesTax / 100) * price; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
       }
 
       if (
         (taxByMassOfItem <= 0 || taxByMassOfItem >= 100) &&
         (exciseRate <= 0 || exciseRate >= 100)
       ) {
-        throw new BadRequestError('Excise Rate not specified');
-        // throw new BadRequestError('There must be one tax type specified');
+        // throw new BadRequestError('Excise Rate not specified');
+        throw new BadRequestError('There must be one tax type specified');
       }
       /*************/
 
@@ -112,7 +113,10 @@ router.post(
           salesTax,
           exciseRate,
           totalPrice:
-            price + (exciseRate * price) / 100 + taxAmount + taxByMassOfItem, //https://www.investopedia.com/terms/e/excisetax.asp
+            price +
+            (exciseRate / 100) * price +
+            taxAmount +
+            (taxByMassOfItem / 100) * massOfItem, //https://www.investopedia.com/terms/e/excisetax.asp
           /******/
           title,
           description,

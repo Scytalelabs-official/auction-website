@@ -5,7 +5,10 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
 
-import { createPaymentRouter } from './routes/add-item';
+import { addItemRouter } from './routes/add-item';
+import { deleteItemRouter } from './routes/delete-item';
+import { getItemRouter } from './routes/get-item';
+import { getItemsRouter } from './routes/get-items';
 
 const app = express();
 
@@ -14,7 +17,10 @@ app.use(json());
 app.use(cookieSession({ signed: false, secure: false }));
 app.use(currentUser);
 
-app.use(createPaymentRouter);
+app.use(addItemRouter);
+app.use(deleteItemRouter);
+app.use(getItemRouter);
+app.use(getItemsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

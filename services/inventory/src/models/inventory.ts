@@ -1,10 +1,13 @@
 import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 import { InventoryStatus } from '../../../../common/src/events/types/inventory-status';
+
 // import SequelizeSlugify from 'sequelize-slugify';
 
 export interface InventoryAttributes {
   id?: string;
+  userId: string;
+  slug?: string;
   title: string;
   status?: InventoryStatus;
   price: number;
@@ -33,6 +36,14 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         defaultValue: UUIDV4,
         unique: true,
         primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      slug: {
+        type: DataTypes.STRING,
+        unique: true,
       },
       title: {
         type: DataTypes.STRING,

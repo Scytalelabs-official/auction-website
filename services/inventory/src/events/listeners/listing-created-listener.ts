@@ -1,7 +1,13 @@
-import { Listener, ListingCreatedEvent, Subjects } from '@jjmauction/common';
+import {
+  Listener,
+  ListingCreatedEvent,
+  ListingStatus,
+  Subjects,
+} from '@jjmauction/common';
 import { Message } from 'node-nats-streaming';
 
 import { Listing } from '../../models';
+import { Inventory } from '../../models';
 import { queueGroupName } from './queue-group-name';
 
 export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
@@ -9,13 +15,20 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
   subject: Subjects.ListingCreated = Subjects.ListingCreated;
 
   async onMessage(data: ListingCreatedEvent['data'], msg: Message) {
-    const { id, price } = data;
+    const { id, userId, title, slug, expiresAt, price } = data;
 
     await Listing.create({
       id,
-      winnerId: '',
-      amount: price,
+      title,
+      slug,
+      userId,
+      expiresAt,
+      startPrice: price,
+      currentPrice: price,
+      status: ListingStatus.Active,
     });
+
+    await Inventory;
 
     msg.ack();
   }

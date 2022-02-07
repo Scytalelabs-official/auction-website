@@ -73,6 +73,7 @@ router.post(
 
       const item = await Inventory.create(
         {
+          userId: req.currentUser!.id,
           title,
           price,
           massOfItem,
@@ -82,13 +83,15 @@ router.post(
       );
 
       new InventoryItemCreatedPublisher(natsWrapper.client).publish({
-        id: item.id,
+        id: item.id!,
+        userId: req.currentUser!.id,
+        slug: item.slug!,
         title,
         price,
         massOfItem,
         description,
         createdAt: new Date(Date.now()),
-        version: item.version,
+        version: item.version!,
       });
 
       res.status(201).send(item);
@@ -96,4 +99,4 @@ router.post(
   }
 );
 
-export { router as createListingRouter };
+export { router as addItemRouter };
