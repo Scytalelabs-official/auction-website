@@ -6,11 +6,11 @@ export enum InventoryStatus {
   Listed = 'Listed',
 
   // When the item is reserved for auction
-  ReservedForAuction = 'ReservedForAuction',
+  Reserved = 'Reserved',
 
   // When the item is reserved for auction
   Refunded = 'Refunded',
 
   // The auction winner has paid for the item and the SOP has been executed
-  Complete = 'complete',
+  Fulfilled = 'Fulfilled',
 }

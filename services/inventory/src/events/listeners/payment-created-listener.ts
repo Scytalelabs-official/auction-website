@@ -3,47 +3,40 @@ import { Message } from 'node-nats-streaming';
 
 // import {
 //   Listener,
-//   ListingCreatedEvent,
 //   ListingStatus,
+//   NotFoundError,
+//   PaymentCreatedEvent,
 //   Subjects,
 // } from '@jjmauction/common';
 import { Listener } from '../../../../../common/src/events/base-listener';
-import { ListingCreatedEvent } from '../../../../../common/src/events/listing-created-event';
+import { PaymentCreatedEvent } from '../../../../../common/src/events/payment-created-event';
 import { Subjects } from '../../../../../common/src/events/subjects';
 import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
 import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
-import { Listing } from '../../models';
 import { Inventory } from '../../models';
+import { Listing } from '../../models';
+import { natsWrapper } from '../../nats-wrapper';
 import { queueGroupName } from './queue-group-name';
 
-export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
+export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
   queueGroupName = queueGroupName;
-  subject: Subjects.ListingCreated = Subjects.ListingCreated;
+  subject: Subjects.PaymentCreated = Subjects.PaymentCreated;
 
-  async onMessage(data: ListingCreatedEvent['data'], msg: Message) {
-    const { id, userId, inventoryItemId, title, slug, expiresAt, price } = data;
+  async onMessage(data: PaymentCreatedEvent['data'], msg: Message) {
+    const { id } = data;
+    const listing = await Listing.findOne({ where: { id } });
 
-    await Listing.create({
-      id,
-      inventoryItemId,
-      title,
-      slug,
-      userId,
-      expiresAt,
-      startPrice: price,
-      currentPrice: price,
-      status: ListingStatus.Active,
-    });
-
-    const item = await Inventory.findOne({
-      where: { id: inventoryItemId },
-    });
-
-    if (!item) {
+    if (!listing) {
       throw new NotFoundError();
     }
 
-    await item.update({ status: InventoryStatus.Listed });
+    const item = await Inventory.findOne({
+      where: { id: listing.inventoryItemId },
+    });
+    if (!item) {
+      throw new NotFoundError();
+    }
+    await item.update({ status: InventoryStatus.Fulfilled });
 
     msg.ack();
   }

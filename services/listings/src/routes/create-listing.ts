@@ -10,7 +10,7 @@ import { body } from 'express-validator';
 import multer from 'multer';
 
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
-import { Listing, db } from '../models';
+import { Inventory, Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
 // import cloudinary , {v2} from 'cloudinary';
@@ -69,6 +69,7 @@ router.post(
         taxByMassOfItem, //will get this from a table that contains the tax by mass information
         salesTax,
         exciseRate,
+        inventoryItemId,
         /*********/
       } = req.body;
 
@@ -99,6 +100,13 @@ router.post(
         // throw new BadRequestError('Excise Rate not specified');
         throw new BadRequestError('There must be one tax type specified');
       }
+      const item = await Inventory.findOne({
+        where: { id: inventoryItemId },
+      });
+
+      if (!item) {
+        throw new NotFoundError();
+      }
       /*************/
 
       const listing = await Listing.create(
@@ -107,6 +115,7 @@ router.post(
           startPrice: price,
           currentPrice: price,
           /******/
+          inventoryItemId: item.id,
           paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
