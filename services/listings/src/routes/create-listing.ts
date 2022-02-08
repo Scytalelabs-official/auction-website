@@ -80,7 +80,7 @@ router.post(
           { width: 1280, height: 1280 },
         ],
       });
-console.log("HELLO");
+      console.log("HELLO");
 
       /*************/
 
@@ -92,29 +92,29 @@ console.log("HELLO");
         // throw new BadRequestError('Sales tax ambiguous value given');
       } else {
         taxAmount = (salesTax / 100) * price; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
-        console.log("taxAmount",taxAmount);
-        
+        console.log("taxAmount", taxAmount);
+
       }
 
-      if ((taxByMassOfItem <=0 || taxByMassOfItem>=100) && (exciseRate <=0 || exciseRate>=100)) {
+      if ((taxByMassOfItem <= 0 || taxByMassOfItem >= 100) && (exciseRate <= 0 || exciseRate >= 100)) {
         throw new BadRequestError('Excise Rate not specified');
         // throw new BadRequestError('There must be one tax type specified');
       }
       /*************/
 
       let exciseprice = (exciseRate / 100) * price
-      console.log('exciseprice',exciseprice);
+      console.log('exciseprice', exciseprice);
       let massprice = (taxByMassOfItem / 100) * massOfItem
-      console.log('massprice',massprice);
+      console.log('massprice', massprice);
       // console.log('price',price);
       // console.log('exciseprice',exciseprice);
       // console.log('taxAmount',taxAmount);
       let sum = Number(price) + Number(exciseprice) + Number(taxAmount) + Number(massprice)
-      console.log('price',price);
-      console.log('exciseprice',exciseprice);
-      console.log('taxAmount',taxAmount);
-      console.log('massprice',massprice);
-      console.log('sum',sum);
+      console.log('price', price);
+      console.log('exciseprice', exciseprice);
+      console.log('taxAmount', taxAmount);
+      console.log('massprice', massprice);
+      console.log('sum', sum);
       const listing = await Listing.create(
         {
           userId: req.currentUser.id,
@@ -127,7 +127,7 @@ console.log("HELLO");
           salesTax,
           exciseRate,
           totalPrice:
-          sum, //https://www.investopedia.com/terms/e/excisetax.asp
+            sum, //https://www.investopedia.com/terms/e/excisetax.asp
           /******/
           title,
           description,

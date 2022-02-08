@@ -239,12 +239,12 @@ const Sell = () => {
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                       <div className="relative flex items-stretch flex-grow focus-within:z-10">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">$</span>
+                          <span className="text-gray-500 sm:text-sm">g</span>
                         </div>
                         <Field
                           type="number"
                           name="massOfItem"
-                          className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
                         />
                       </div>
                       <ErrorMessage
@@ -261,11 +261,16 @@ const Sell = () => {
                       Tax By Mass of Item
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <Field
-                        type="number"
-                        name="taxByMassOfItem"
-                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                      />
+                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <Field
+                          type="number"
+                          name="taxByMassOfItem"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
+                        />
+                      </div>
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="taxByMassOfItem"
@@ -280,11 +285,16 @@ const Sell = () => {
                       Sales Tax
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <Field
-                        type="number"
-                        name="salesTax"
-                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                      />
+                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">%</span>
+                        </div>
+                        <Field
+                          type="number"
+                          name="salesTax"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
+                        />
+                      </div>
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="salesTax"
@@ -299,18 +309,22 @@ const Sell = () => {
                       Excise Rate
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <Field
-                        type="number"
-                        name="exciseRate"
-                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                      />
+                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">%</span>
+                        </div>
+                        <Field
+                          type="number"
+                          name="exciseRate"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
+                        />
+                      </div>
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="exciseRate"
                       />
                     </div>
                   </div>
-
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
                       htmlFor="endDate"

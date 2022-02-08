@@ -16,6 +16,7 @@ import Countdown from '../../components/Countdown';
 import Error from '../../components/ErrorMessage';
 import AppContext from '../../context/app-context';
 import { centsToDollars } from '../../utils/cents-to-dollars';
+import { convertToDollars } from '../../utils/convert-to-dollars';
 
 const StyledListing = styled.div(xw`
 	flex 
@@ -187,25 +188,25 @@ const Listing = ({ listingData }) => {
               <StyledTableRow>
                 <StyledTableRowName>Mass of Item</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.massOfItem} g
+                  {listing.massOfItem}g
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
                 <StyledTableRowName>Tax by Mass of Item</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.taxByMassOfItem} %
+                  {convertToDollars(listing.taxByMassOfItem)}
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
                 <StyledTableRowName>Excise Rate</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.exciseRate} %
+                  {listing.exciseRate}%
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
                 <StyledTableRowName>Sales Tax</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.salesTax} %
+                  {listing.salesTax}%
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
