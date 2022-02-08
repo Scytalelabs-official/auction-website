@@ -35,6 +35,30 @@ const validationSchema = Yup.object({
       'The start price must be a number with at most 2 decimals'
     )
     .required('Required'),
+  massOfItem: Yup.string()
+    .matches(
+      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+      'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
+    )
+    .required('Required'),
+  taxByMassOfItem: Yup.string()
+    .matches(
+      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
+      'The Tax by Mass of Item should be between Zero and Hundred and it must be a number with at most 2 decimals.'
+    )
+    .required('Required'),
+  salesTax: Yup.string()
+    .matches(
+      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
+      'The Sales Tax should be between Zero and Hundred and it must be a number with at most 2 decimals.'
+    )
+    .required('Required'),
+  exciseRate: Yup.string()
+    .matches(
+      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
+      'The Exise Rate should be between Zero and Hundred and it must be a number with at most 2 decimals.'
+    )
+    .required('Required'),
   expiresAt: Yup.date()
     .required('Required')
     .min(
@@ -54,9 +78,15 @@ const Sell = () => {
 
     try {
       body.price *= 100;
+      body.paymentConfirmation = true;
       const formData = new FormData();
-      console.log('body',body);
+      console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
+      // paymentConfirmation,
+      // massOfItem,
+      // taxByMassOfItem, //will get this from a table that contains the tax by mass information 
+      // salesTax,
+      // exciseRate,
       // Display the values
       for (var value of formData.values()) {
         console.log(value);
@@ -65,9 +95,9 @@ const Sell = () => {
       toast.success('Sucessfully listed item for sale!');
       Router.push(`/listings/${data.slug}`);
     } catch (err) {
-      console.log('err',err);
-      console.log('err',err.response);
-      
+      console.log('err', err);
+      console.log('err', err.response);
+
       err.response.data.errors.forEach((err) => toast.error(err.message));
     }
 
@@ -105,6 +135,10 @@ const Sell = () => {
             title: '',
             description: '',
             price: '',
+            massOfItem: '',
+            taxByMassOfItem: '',
+            salesTax: '',
+            exciseRate: '',
             expiresAt: '',
             image: '',
           }}
@@ -192,6 +226,87 @@ const Sell = () => {
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="price"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="massOfItem"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Mass of Item
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <Field
+                          type="number"
+                          name="massOfItem"
+                          className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                        />
+                      </div>
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="massOfItem"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="taxByMassOfItem"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Tax By Mass of Item
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="number"
+                        name="taxByMassOfItem"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="taxByMassOfItem"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="salesTax"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Sales Tax
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="number"
+                        name="salesTax"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="salesTax"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="exciseRate"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Excise Rate
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="number"
+                        name="exciseRate"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="exciseRate"
                       />
                     </div>
                   </div>

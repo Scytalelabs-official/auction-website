@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import xw from 'xwind/macro';
@@ -14,6 +14,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import Countdown from '../../components/Countdown';
 import Error from '../../components/ErrorMessage';
+import AppContext from '../../context/app-context';
 import { centsToDollars } from '../../utils/cents-to-dollars';
 
 const StyledListing = styled.div(xw`
@@ -80,6 +81,12 @@ const StyledErrorMessage = styled.div(xw`
 const Listing = ({ listingData }) => {
   const [listing, setListing] = useState(listingData);
   const [isBidding, setIsBidding] = useState(false);
+  console.log("listing",listing);
+  
+  const {
+    auth: { isAuthenticated, currentUser },
+    setAuth,
+  } = useContext(AppContext);
 
   useEffect(() => {
     const room = listing && listing.slug;
@@ -109,13 +116,19 @@ const Listing = ({ listingData }) => {
 
   const onSubmit = async (body) => {
     setIsBidding(true);
+    console.log("currentUser", currentUser);
+    console.log('listing', listing);
 
     try {
-      await axios.post(`/api/bids/${listing.id}`, {
+      await axios.post(`/api/bids/`, {
         amount: body.amount * 100,
+        user: listing.user
       });
       toast.success('Sucessfully placed bid!');
     } catch (err) {
+      console.log('err',err);
+      console.log('err.response',err.response);
+      
       err.response.data.errors.forEach((err) => toast.error(err.message));
     }
 
@@ -169,6 +182,36 @@ const Listing = ({ listingData }) => {
                 <StyledTableRowName>Price</StyledTableRowName>
                 <StyledTableRowValue>
                   {centsToDollars(listing.currentPrice)}
+                </StyledTableRowValue>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableRowName>Mass of Item</StyledTableRowName>
+                <StyledTableRowValue>
+                  {listing.massOfItem} g
+                </StyledTableRowValue>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableRowName>Tax by Mass of Item</StyledTableRowName>
+                <StyledTableRowValue>
+                  {listing.taxByMassOfItem} %
+                </StyledTableRowValue>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableRowName>Excise Rate</StyledTableRowName>
+                <StyledTableRowValue>
+                  {listing.exciseRate} %
+                </StyledTableRowValue>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableRowName>Sales Tax</StyledTableRowName>
+                <StyledTableRowValue>
+                  {listing.salesTax} %
+                </StyledTableRowValue>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableRowName>Total Price</StyledTableRowName>
+                <StyledTableRowValue>
+                  {centsToDollars(listing.totalPrice)}
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>

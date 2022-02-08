@@ -6,7 +6,7 @@ import {
 } from '@jjmauction/common';
 import cloudinary from 'cloudinary';
 // import cloudinary , {v2} from 'cloudinary';
-var local_cloudinary = require('cloudinary').v2;
+// var local_cloudinary = require('cloudinary').v2;
 
 
 import express, { Request, Response } from 'express';
@@ -24,12 +24,12 @@ const storage = multer.diskStorage({
     callback(null, Date.now() + file.originalname);
   },
 });
-local_cloudinary.config({
-        cloud_name: 'scytalelabs',
-        api_key: '432183885194623',
-        api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
-        secure: true
-    });
+// local_cloudinary.config({
+//         cloud_name: 'scytalelabs',
+//         api_key: '432183885194623',
+//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//         secure: true
+//     });
 const upload = multer({ storage: storage });
 
 router.post(
@@ -91,7 +91,9 @@ console.log("HELLO");
 
         // throw new BadRequestError('Sales tax ambiguous value given');
       } else {
-        taxAmount = (salesTax * price) / 100; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
+        taxAmount = (salesTax / 100) * price; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
+        console.log("taxAmount",taxAmount);
+        
       }
 
       if ((taxByMassOfItem <=0 || taxByMassOfItem>=100) && (exciseRate <=0 || exciseRate>=100)) {
@@ -100,6 +102,19 @@ console.log("HELLO");
       }
       /*************/
 
+      let exciseprice = (exciseRate / 100) * price
+      console.log('exciseprice',exciseprice);
+      let massprice = (taxByMassOfItem / 100) * massOfItem
+      console.log('massprice',massprice);
+      // console.log('price',price);
+      // console.log('exciseprice',exciseprice);
+      // console.log('taxAmount',taxAmount);
+      let sum = Number(price) + Number(exciseprice) + Number(taxAmount) + Number(massprice)
+      console.log('price',price);
+      console.log('exciseprice',exciseprice);
+      console.log('taxAmount',taxAmount);
+      console.log('massprice',massprice);
+      console.log('sum',sum);
       const listing = await Listing.create(
         {
           userId: req.currentUser.id,
@@ -112,7 +127,7 @@ console.log("HELLO");
           salesTax,
           exciseRate,
           totalPrice:
-            price + (exciseRate * price) / 100 + taxAmount + taxByMassOfItem, //https://www.investopedia.com/terms/e/excisetax.asp
+          sum, //https://www.investopedia.com/terms/e/excisetax.asp
           /******/
           title,
           description,
