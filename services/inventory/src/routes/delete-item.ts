@@ -45,7 +45,7 @@ router.delete(
 
       await socketIOWrapper.io
         .of('/socket')
-        .to(item.slug)
+        .to(item.id)
         .emit('item-deleted', null);
 
       res.status(204).send(item);

@@ -4,7 +4,6 @@ import {
   requireAuth,
   validateRequest,
 } from '@jjmauction/common';
-// import cloudinary from 'cloudinary';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
@@ -12,25 +11,7 @@ import { InventoryItemCreatedPublisher } from '../events/publishers/inventory-it
 import { Inventory, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
-// import multer from 'multer';
-
-// import cloudinary , {v2} from 'cloudinary';
-// var local_cloudinary = require('cloudinary').v2;
-
 const router = express.Router();
-
-// const storage = multer.diskStorage({
-//   filename: function (req, file, callback) {
-//     callback(null, Date.now() + file.originalname);
-//   },
-// });
-// local_cloudinary.config({
-//         cloud_name: 'scytalelabs',
-//         api_key: '432183885194623',
-//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
-//         secure: true
-//     });
-// const upload = multer({ storage: storage });
 
 router.post(
   '/api/inventory/addItem',
@@ -45,13 +26,6 @@ router.post(
     body('title')
       .isLength({ min: 3, max: 100 })
       .withMessage('The item name must be between 5 and 1000 characters'),
-    // body('expiresAt').custom((value) => {
-    //   let enteredDate = new Date(value);
-    //   let tommorowsDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    //   if (enteredDate <= tommorowsDate)
-    //     throw new BadRequestError('Invalid Date');
-    //   return true;
-    // }),
     body('description')
       .isLength({ min: 5, max: 500 })
       .withMessage(
@@ -61,15 +35,7 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     await db.transaction(async (transaction) => {
-      const { title, price, massOfItem, description } = req.body;
-
-      // // @ts-ignore
-      // const result = await cloudinary.v2.uploader.upload(req.file.path, {
-      //   eager: [
-      //     { width: 225, height: 225 },
-      //     { width: 1280, height: 1280 },
-      //   ],
-      // });
+      const { title, price, massOfItem, quantity, description } = req.body;
 
       const item = await Inventory.create(
         {
@@ -77,6 +43,7 @@ router.post(
           title,
           price,
           massOfItem,
+          quantity,
           description,
         },
         { transaction }
@@ -85,7 +52,7 @@ router.post(
       new InventoryItemCreatedPublisher(natsWrapper.client).publish({
         id: item.id!,
         userId: req.currentUser!.id,
-        slug: item.slug!,
+        // slug: item.slug!,
         title,
         price,
         massOfItem,

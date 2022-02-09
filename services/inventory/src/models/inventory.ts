@@ -7,12 +7,13 @@ import { InventoryStatus } from '../../../../common/src/events/types/inventory-s
 export interface InventoryAttributes {
   id?: string;
   userId: string;
-  slug?: string;
+  // slug?: string;
   title: string;
   status?: InventoryStatus;
   price: number;
   massOfItem: number;
-  description: Boolean;
+  quantity: number;
+  description: string;
   createdAt?: Date;
   version?: number;
 }
@@ -41,10 +42,10 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      slug: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
+      // slug: {
+      //   type: DataTypes.STRING,
+      //   unique: true,
+      // },
       title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -62,6 +63,10 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       description: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -72,9 +77,15 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
       },
     },
     {
+      // indexes: [{ type: 'FULLTEXT', name: 'text_idx', fields: ['title'] }],
       version: true,
     }
   );
+  // SequelizeSlugify.slugifyModel(Inventory, {
+  //   source: ['title'],
+  // });
+
+  // return Inventory;
 };
 
 export { InventoryFactory };

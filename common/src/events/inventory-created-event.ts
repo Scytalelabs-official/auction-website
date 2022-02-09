@@ -5,11 +5,11 @@ export interface InventoryItemCreatedEvent {
   data: {
     id: string;
     userId: string;
-    slug: string;
+    // slug: string;
     title: string;
     price: number;
     massOfItem: number;
-    description: Boolean;
+    description: string;
     createdAt: Date;
     version: number;
   };
