@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 config();
-import { WISETokenClient, utils, constants } from "../src";
+import { AUCTIONClient, utils, constants } from "../src";
 import { parseTokenMeta, sleep, getDeploy } from "./utils";
 
 import { Keys } from "casper-js-sdk";
@@ -13,14 +13,12 @@ const {
 	MASTER_KEY_PAIR_PATH,
 	DECLARATION_CONTRACT,
 	GLOBAL_ADDRESS,
-	SYNTHETIC_BNB_ADDRESS,
 	INSTALL_PAYMENT_AMOUNT,
 	CONTRACT_NAME,
-	BEP_20_ADDRESS,
-	ROUTER_ADDRESS,
-	STAKING_TOKEN_ADDRESS,
-	TIMING_ADDRESS,
-	USINGPROVEABLE_CONTRACT,
+	BEP20,
+	UNISWAP_FACTORY,
+	SYNTHETIC_HELPER,
+	SYNTHETIC_TOKEN,
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -29,21 +27,18 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 );
 
 const test = async () => {
-	const wise = new WISETokenClient(
+	const auction = new AUCTIONClient(
 		NODE_ADDRESS!,
 		CHAIN_NAME!,
 		EVENT_STREAM_ADDRESS!
 	);
 
-	const installDeployHash = await wise.install(
+	const installDeployHash = await auction.install(
 		KEYS,
-		DECLARATION_CONTRACT!,
-		GLOBAL_ADDRESS!,
-		SYNTHETIC_BNB_ADDRESS!,
-		BEP_20_ADDRESS!,
-		ROUTER_ADDRESS!,
-		STAKING_TOKEN_ADDRESS!,
-		TIMING_ADDRESS!,
+		// BEP20!,
+		// UNISWAP_FACTORY!,
+		// SYNTHETIC_HELPER!,
+		// SYNTHETIC_TOKEN!,
 		CONTRACT_NAME!,
 		INSTALL_PAYMENT_AMOUNT!,
 		WASM_PATH!

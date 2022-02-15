@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 config();
-import { WISETokenClient, utils, constants } from "../src";
+import { AUCTIONClient, utils, constants } from "../src";
 import { parseTokenMeta, sleep, getDeploy } from "./utils";
 
 import {
@@ -11,7 +11,7 @@ import {
 	CLPublicKeyType,
 } from "casper-js-sdk";
 
-const { WISEEvents } = constants;
+const { AUCTIONEvents } = constants;
 
 const {
 	NODE_ADDRESS,
@@ -19,22 +19,32 @@ const {
 	CHAIN_NAME,
 	WASM_PATH,
 	MASTER_KEY_PAIR_PATH,
-	RECEIVER_ACCOUNT_ONE,
-	INSTALL_PAYMENT_AMOUNT,
-	SET_FEE_TO_PAYMENT_AMOUNT,
-	SET_FEE_TO_SETTER_PAYMENT_AMOUNT,
-	CREATE_PAIR_PAYMENT_AMOUNT,
+
 	CONTRACT_NAME,
 	RESERVE_WISE_PAYMENT_AMOUNT,
-	IMMUTABLE_TRANSFORMER,
-	TRANSFORMER_PURSE,
-	EQUALIZER_ADDRESS,
-	INVESTOR_ADDRESS,
-	AMOUNT,
-	LOCK_DAYS,
-	PURSE,
-	TOKEN_ADDRESS,
-	TOKEN_AMOUNT,
+
+	CREATED_AT,
+	SLUG,
+	ID,
+	CURRENT_PRICE,
+	STATUS,
+	EXPIRES_AT,
+	START_PRICE,
+	CURRENT_WINNER_ID,
+	INVENTORY_ITEM_ID,
+	PAYMENT_CONFIRMATION,
+	MASS_OF_ITEM,
+	TAX_BY_MASS_OF_ITEM,
+	SALES_TAX,
+	EXCISE_RATE,
+	TOTAL_PRICE,
+	USER_ID,
+	TITLE,
+	DESCRIPTION,
+	IMAGE_ID,
+	SMALL_IMAGE,
+	LARGE_IMAGE,
+	VERSION,
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -43,7 +53,7 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 );
 
 const test = async () => {
-	const wise = new WISETokenClient(
+	const auction = new AUCTIONClient(
 		NODE_ADDRESS!,
 		CHAIN_NAME!,
 		EVENT_STREAM_ADDRESS!
@@ -84,90 +94,69 @@ const test = async () => {
 
 	console.log(`... Contract Hash: ${contractHash}`);
 
-	// We don't need hash- prefix so i'm removing it
-	// await liquidity.setContractHash(contractHash.slice(5));
-
-	const setLiquidityTransfomer = await wise.setLiquidityTransfomer(
+	const store_deploy = await auction.store(
 		KEYS,
-		IMMUTABLE_TRANSFORMER!,
-		TRANSFORMER_PURSE!,
+		CREATED_AT!,
+		SLUG!,
+		ID!,
+		CURRENT_PRICE!,
+		STATUS!,
+		EXPIRES_AT!,
+		START_PRICE!,
+		CURRENT_WINNER_ID!,
+		INVENTORY_ITEM_ID!,
+		PAYMENT_CONFIRMATION!,
+		MASS_OF_ITEM!,
+		TAX_BY_MASS_OF_ITEM!,
+		SALES_TAX!,
+		EXCISE_RATE!,
+		TOTAL_PRICE!,
+		USER_ID!,
+		TITLE!,
+		DESCRIPTION!,
+		IMAGE_ID!,
+		SMALL_IMAGE!,
+		LARGE_IMAGE!,
+		VERSION!,
 		RESERVE_WISE_PAYMENT_AMOUNT!
 	);
-	console.log(
-		"... setLiquidityTransfomer deploy hash: ",
-		setLiquidityTransfomer
-	);
-	await getDeploy(NODE_ADDRESS!, setLiquidityTransfomer);
-	console.log("... setLiquidityTransfomer created successfully");
+	console.log("... store deploy hash: ", store_deploy);
+	await getDeploy(NODE_ADDRESS!, store_deploy);
+	console.log("... store created successfully");
 
-	const setBusd = await wise.setBusd(
-		KEYS,
-		EQUALIZER_ADDRESS!,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... setBusd deploy hash: ", setBusd);
-	await getDeploy(NODE_ADDRESS!, setBusd);
-	console.log("... setBusd created successfully");
+	// const update = await auction.update(
+	// 	KEYS,
+	// 	CREATED_AT!,
+	// 	SLUG!,
+	// 	ID!,
+	// 	CURRENT_PRICE!,
+	// 	STATUS!,
+	// 	EXPIRES_AT!,
+	// 	START_PRICE!,
+	// 	CURRENT_WINNER_ID!,
+	// 	INVENTORY_ITEM_ID!,
+	// 	PAYMENT_CONFIRMATION!,
+	// 	MASS_OF_ITEM!,
+	// 	TAX_BY_MASS_OF_ITEM!,
+	// 	SALES_TAX!,
+	// 	EXCISE_RATE!,
+	// 	TOTAL_PRICE!,
+	// 	USER_ID!,
+	// 	TITLE!,
+	// 	DESCRIPTION!,
+	// 	IMAGE_ID!,
+	// 	SMALL_IMAGE!,
+	// 	LARGE_IMAGE!,
+	// 	VERSION!,
+	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// );
+	// console.log("... update deploy hash: ", update);
+	// await getDeploy(NODE_ADDRESS!, update);
+	// console.log("... update created successfully");
+	// /*=========================Getters=========================*/
 
-	const renounceKeeper = await wise.renounceKeeper(
-		KEYS,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... renounceKeeper deploy hash: ", renounceKeeper);
-	await getDeploy(NODE_ADDRESS!, renounceKeeper);
-	console.log(".PURSE.. renounceKeeper createINVESTMENT_DAYd successfully");
-
-	const mintSupply = await wise.mintSupply(
-		KEYS,
-		INVESTOR_ADDRESS!,
-		AMOUNT!,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... mintSupply deploy hash: ", mintSupply);
-	await getDeploy(NODE_ADDRESS!, mintSupply);
-	console.log("... mintSupply created successfully");
-
-	const extendLtAuction = await wise.extendLtAuction(
-		KEYS,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... extendLtAuction deploy hash: ", extendLtAuction);
-	await getDeploy(NODE_ADDRESS!, extendLtAuction);
-	console.log("... extendLtAuction created successfully");
-
-	/*=========================Getters=========================*/
-
-	const createStakeWithBnb = await wise.createStakeWithBnb(
-		LOCK_DAYS,
-		KEYS.publicKey,
-		AMOUNT,
-		PURSE
-	);
-	console.log(`... Contract createStakeWithBnb: ${createStakeWithBnb}`);
-
-	const createStakeWithToken = await wise.createStakeWithToken(
-		KEYS.publicKey,
-		TOKEN_AMOUNT,
-		LOCK_DAYS,
-		KEYS.publicKey
-	);
-	console.log(`... Contract createStakeWithToken: ${createStakeWithToken}`);
-
-	const getPairAddress = await wise.getPairAddress();
-	console.log(`... Contract getPairAddress: ${getPairAddress}`);
-
-	const getTotalStaked = await wise.getTotalStaked();
-	console.log(`... Contract getTotalStaked: ${getTotalStaked}`);
-
-	const getLiquidityTransformer = await wise.getLiquidityTransformer();
-	console.log(
-		`... Contract getLiquidityTransformer: ${getLiquidityTransformer}`
-	);
-
-	const getSyntheticTokenAddress = await wise.getSyntheticTokenAddress();
-	console.log(
-		`... Contract getSyntheticTokenAddress: ${getSyntheticTokenAddress}`
-	);
+	// const get_data = await auction.get_data(ID!);
+	// console.log(`... Contract get_data: ${get_data}`);
 };
 
 test();
