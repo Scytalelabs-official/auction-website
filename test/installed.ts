@@ -14,12 +14,12 @@ import {
 const { AUCTIONEvents } = constants;
 
 const {
+
 	NODE_ADDRESS,
 	EVENT_STREAM_ADDRESS,
 	CHAIN_NAME,
-	WASM_PATH,
-	MASTER_KEY_PAIR_PATH,
 
+	MASTER_KEY_PAIR_PATH,
 	CONTRACT_NAME,
 	RESERVE_WISE_PAYMENT_AMOUNT,
 
@@ -45,6 +45,7 @@ const {
 	SMALL_IMAGE,
 	LARGE_IMAGE,
 	VERSION,
+	SIMPLE_AUCTION_CONTRACT_HASH
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -52,47 +53,17 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 	`${MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
 
+const auction = new AUCTIONClient(
+	NODE_ADDRESS!,
+	CHAIN_NAME!,
+	EVENT_STREAM_ADDRESS!
+);
+
 const test = async () => {
-	const auction = new AUCTIONClient(
-		NODE_ADDRESS!,
-		CHAIN_NAME!,
-		EVENT_STREAM_ADDRESS!
-	);
+	
+	await auction.setContractHash(SIMPLE_AUCTION_CONTRACT_HASH!);
 
-	// const listener = liquidity.onEvent(
-	// 	[
-	// 		LIQUIDITYEvents.SetFeeTo,
-	// 		LIQUIDITYEvents.SetFeeToSetter,
-	// 		LIQUIDITYEvents.CreatePair,
-	// 	],
-	// 	(eventName, deploy, result) => {
-	// 		if (deploy.success) {
-	// 			console.log(
-	// 				`Successfull deploy of: ${eventName}, deployHash: ${deploy.deployHash}`
-	// 			);
-	// 			console.log(result.value());
-	// 		} else {
-	// 			console.log(
-	// 				`Failed deploy of ${eventName}, deployHash: ${deploy.deployHash}`
-	// 			);
-	// 			console.log(`Error: ${deploy.error}`);
-	// 		}
-	// 	}
-	// );
-
-	await sleep(5 * 1000);
-
-	let accountInfo = await utils.getAccountInfo(NODE_ADDRESS!, KEYS.publicKey);
-
-	console.log(`... Account Info: `);
-	console.log(JSON.stringify(accountInfo, null, 2));
-
-	const contractHash = await utils.getAccountNamedKeyValue(
-		accountInfo,
-		`${CONTRACT_NAME!}_contract_hash`
-	);
-
-	console.log(`... Contract Hash: ${contractHash}`);
+	console.log("... Contract Hash:",SIMPLE_AUCTION_CONTRACT_HASH!);
 
 	const store_deploy = await auction.store(
 		KEYS,
@@ -121,6 +92,7 @@ const test = async () => {
 		RESERVE_WISE_PAYMENT_AMOUNT!
 	);
 	console.log("... store deploy hash: ", store_deploy);
+
 	await getDeploy(NODE_ADDRESS!, store_deploy);
 	console.log("... store created successfully");
 

@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
-    "casper-js-sdk": "2.4.1",
+    "casper-js-sdk": "2.8.0",
     "np": "^7.5.0",
     "ts-results": "^3.3.0"
   },

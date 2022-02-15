@@ -27,6 +27,7 @@ import { RecipientType, IPendingDeploy } from "./types";
 // const axios = require("axios").default;
 
 class AUCTIONClient {
+
 	private contractName: string = "AUCTION";
 	private contractHash: string = "AUCTION";
 	private contractPackageHash: string = "AUCTION";
@@ -86,7 +87,38 @@ class AUCTIONClient {
 			throw Error("Problem with installation");
 		}
 	}
-
+	public async setContractHash(hash: string) {
+		const stateRootHash = await utils.getStateRootHash(this.nodeAddress);
+		const contractData = await utils.getContractData(
+		  this.nodeAddress,
+		  stateRootHash,
+		  hash
+		);
+	
+		const { contractPackageHash, namedKeys } = contractData.Contract!;
+		this.contractHash = hash;
+		this.contractPackageHash = contractPackageHash.replace(
+		  "contract-package-wasm",
+		  ""
+		);
+		const LIST_OF_NAMED_KEYS = [
+		  'balances',
+		  'nonces',
+		  'allowances',
+		  `${this.contractName}_package_hash`,
+		  `${this.contractName}_package_hash_wrapped`,
+		  `${this.contractName}_contract_hash`,
+		  `${this.contractName}_contract_hash_wrapped`,
+		  `${this.contractName}_package_access_token`,
+		];
+		// @ts-ignore
+		this.namedKeys = namedKeys.reduce((acc, val) => {
+		  if (LIST_OF_NAMED_KEYS.includes(val.name)) {
+			return { ...acc, [utils.camelCased(val.name)]: val.key };
+		  }
+		  return acc;
+		}, {});
+	}
 	public async store(
 		keys: Keys.AsymmetricKey,
 		created_at: string,
@@ -97,7 +129,6 @@ class AUCTIONClient {
 		expires_at: string,
 		start_price: string,
 		current_winner_id: string,
-		/******/
 		inventory_item_id: string,
 		payment_confirmation: string,
 		mass_of_item: string,
@@ -105,7 +136,6 @@ class AUCTIONClient {
 		sales_tax: string,
 		excise_rate: string,
 		total_price: string,
-		/******/
 		user_id: string,
 		title: string,
 		description: string,
@@ -140,24 +170,23 @@ class AUCTIONClient {
 			version: CLValueBuilder.u256(version),
 		});
 
+		
 		const deployHash = await contractCall({
 			nodeAddress: this.nodeAddress,
 			keys,
-
 			chainName: this.chainName,
 			contractHash: this.contractHash,
 			entryPoint: "store",
 			runtimeArgs,
-
 			paymentAmount,
 		});
 
 		if (deployHash !== null) {
-			// this.addPendingDeploy(LIQUIDITYEvents.SetFeeTo, deployHash);
 			return deployHash;
 		} else {
 			throw Error("Invalid Deploy");
 		}
+		
 	}
 
 	public async update(
@@ -170,7 +199,6 @@ class AUCTIONClient {
 		expires_at: string,
 		start_price: string,
 		current_winner_id: string,
-		/******/
 		inventory_item_id: string,
 		payment_confirmation: string,
 		mass_of_item: string,
@@ -178,7 +206,6 @@ class AUCTIONClient {
 		sales_tax: string,
 		excise_rate: string,
 		total_price: string,
-		/******/
 		user_id: string,
 		title: string,
 		description: string,
@@ -193,12 +220,12 @@ class AUCTIONClient {
 			slug: CLValueBuilder.string(slug),
 			id: CLValueBuilder.string(id),
 			current_price: CLValueBuilder.u256(current_price),
-			_status: CLValueBuilder.string(_status),
+			status: CLValueBuilder.string(_status),
 			expires_at: CLValueBuilder.string(expires_at),
 			start_price: CLValueBuilder.u256(start_price),
 			current_winner_id: CLValueBuilder.string(current_winner_id),
 			inventory_item_id: CLValueBuilder.string(inventory_item_id),
-			payment_confirmation: CLValueBuilder.string(payment_confirmation),
+			payment_confirmation: CLValueBuilder.bool(true),
 			mass_of_item: CLValueBuilder.u256(mass_of_item),
 			tax_by_mass_of_item: CLValueBuilder.u256(tax_by_mass_of_item),
 			sales_tax: CLValueBuilder.u256(sales_tax),
