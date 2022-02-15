@@ -1,13 +1,18 @@
 import { app } from './app';
+import { ListingCreatedListener } from './events/listeners/listing-created-listener';
+import { ListingExpiredListener } from './events/listeners/listing-expired-listener';
+import { PaymentCreatedListener } from './events/listeners/payment-created-listener';
+import { UserCreatedListener } from './events/listeners/user-created-listener';
 import { db } from './models';
 import { natsWrapper } from './nats-wrapper';
+import { socketIOWrapper } from './socket-io-wrapper';
 
 (async () => {
   try {
-    console.log('The bid service has started');
+    console.log('The inventory service has started');
 
-    if (!process.env.PAYMENTS_MYSQL_URI) {
-      throw new Error('PAYMENTS_MYSQL_URI must be defined');
+    if (!process.env.INVENTORY_MYSQL_URI) {
+      throw new Error('INVENTORY_MYSQL_URI must be defined');
     }
 
     if (!process.env.JWT_KEY) {
@@ -24,10 +29,6 @@ import { natsWrapper } from './nats-wrapper';
 
     if (!process.env.NATS_CLUSTER_ID) {
       throw new Error('NATS_CLUSTER_ID must be defined');
-    }
-
-    if (!process.env.STRIPE_KEY) {
-      throw new Error('STRIPE_KEY must be defined');
     }
 
     await natsWrapper.connect(
@@ -48,9 +49,36 @@ import { natsWrapper } from './nats-wrapper';
     await db.sync();
     console.log('Conneted to MySQL');
 
-    app.listen(3000, () => console.log('Listening on port 3000!'));
+    const server = app.listen(3000, () =>
+      console.log('Listening on port 3000!')
+    );
 
-    console.log('The auth service has started up successfully');
+    socketIOWrapper.listen(server);
+
+    socketIOWrapper.io.of('/socket').on('connection', (socket) => {
+      const room = socket.handshake['query']['r_var'];
+
+      socket.on('join', () => {
+        socket.join(room);
+        console.log('[socket]', 'join room :', room);
+      });
+
+      socket.on('unsubscribe', (room) => {
+        socket.leave(room);
+        console.log('[socket]', 'left room :', room);
+      });
+
+      socket.on('disconnect', (reason) => {
+        console.log('[socket]', 'disconected :', reason);
+      });
+    });
+
+    new ListingCreatedListener(natsWrapper.client).listen();
+    new PaymentCreatedListener(natsWrapper.client).listen();
+    new UserCreatedListener(natsWrapper.client).listen();
+    new ListingExpiredListener(natsWrapper.client).listen();
+
+    console.log('The inventory service has started up successfully');
   } catch (err) {
     console.error(err);
     process.exit(0);

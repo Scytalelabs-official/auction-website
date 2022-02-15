@@ -15,4 +15,5 @@ export enum Subjects {
 
   InventoryItemCreated = 'inventoryItem:created',
   InventoryItemDeleted = 'inventoryItem:deleted',
+  InventoryItemUpdated = 'inventoryItem:updated',
 }

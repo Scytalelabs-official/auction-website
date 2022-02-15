@@ -14,6 +14,9 @@ import { InventoryStatus } from '../../../../../common/src/events/types/inventor
 import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
 import { Listing } from '../../models';
 import { Inventory } from '../../models';
+import { natsWrapper } from '../../nats-wrapper';
+import { socketIOWrapper } from '../../socket-io-wrapper';
+import { InventoryItemUpdatedPublisher } from '../publishers/inventory-item-updated-publisher';
 import { queueGroupName } from './queue-group-name';
 
 export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
@@ -44,6 +47,15 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
     }
 
     await item.update({ status: InventoryStatus.Listed });
+
+    new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
+      id: inventoryItemId,
+      status: InventoryStatus.Listed,
+      price: item.price,
+      version: item.version,
+    });
+
+    await socketIOWrapper.io.of('/socket').to(item.id).emit('listing', item);
 
     msg.ack();
   }

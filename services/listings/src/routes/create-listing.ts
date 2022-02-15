@@ -107,6 +107,25 @@ router.post(
       if (!item) {
         throw new NotFoundError();
       }
+
+      let exciseprice = (exciseRate / 100) * price;
+      console.log('exciseprice', exciseprice);
+      let massprice = (taxByMassOfItem / 100) * massOfItem;
+      console.log('massprice', massprice);
+      // console.log('price',price);
+      // console.log('exciseprice',exciseprice);
+      // console.log('taxAmount',taxAmount);
+      let sum =
+        Number(price) +
+        Number(exciseprice) +
+        Number(taxAmount) +
+        Number(massprice);
+      console.log('price', price);
+      console.log('exciseprice', exciseprice);
+      console.log('taxAmount', taxAmount);
+      console.log('massprice', massprice);
+      console.log('sum', sum);
+
       /*************/
 
       const listing = await Listing.create(
@@ -121,11 +140,7 @@ router.post(
           taxByMassOfItem,
           salesTax,
           exciseRate,
-          totalPrice:
-            price +
-            (exciseRate / 100) * price +
-            taxAmount +
-            (taxByMassOfItem / 100) * massOfItem, //https://www.investopedia.com/terms/e/excisetax.asp
+          totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
           /******/
           title,
           description,

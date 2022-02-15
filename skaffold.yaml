@@ -20,6 +20,14 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: sumairaslam/auction-website-inventory
+      context: services/inventory
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
     - image: jarrodm1234/auction-website-bid
       context: services/bid
       docker:
