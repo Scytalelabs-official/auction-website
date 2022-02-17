@@ -62,7 +62,7 @@ const validationSchema = Yup.object({
   expiresAt: Yup.date()
     .required('Required')
     .min(
-      new Date(Date.now() + 86400000),
+      new Date(Date.now() + 6400000),
       'Auctions must last atleast 24 hours'
     ),
 });

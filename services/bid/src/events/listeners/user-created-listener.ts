@@ -1,7 +1,4 @@
-// import { Listener, Subjects/*, UserCreatedEvent*/ } from '@jjmauction/common';
-import { Listener } from '../../../../../common/src/events/base-listener';
-import { Subjects } from '../../../../../common/src/events/subjects';
-import {UserCreatedEvent} from '../../../../../common/src/events/user-created-event';
+import { Listener, Subjects, UserCreatedEvent } from '@jjmauction/common';
 import { Message } from 'node-nats-streaming';
 
 import { User } from '../../models';
@@ -12,9 +9,9 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
   subject: Subjects.UserCreated = Subjects.UserCreated;
 
   async onMessage(data: UserCreatedEvent['data'], msg: Message) {
-    const { id, name, avatar, email,isRegister, version } = data;
+    const { id, name, avatar, email, version } = data;
 
-    await User.create({ id, name, avatar, email, isRegister, version });
+    await User.create({ id, name, avatar, email, version });
 
     msg.ack();
   }

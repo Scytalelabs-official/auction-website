@@ -1,6 +1,4 @@
-// import { UserCreatedEvent } from '@jjmauction/common';
-import {UserCreatedEvent} from '../../../../../common/src/events/user-created-event';
-
+import { UserCreatedEvent } from '@jjmauction/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import { UserCreatedListener } from '../../../src/events/listeners/user-created-listener';
@@ -15,7 +13,6 @@ const setup = () => {
     name: 'Jarrod',
     email: 'test@test.com',
     avatar: 'test.png',
-    isRegister: true,
     version: 0,
   };
 

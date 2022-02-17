@@ -118,10 +118,11 @@ const Listing = ({ listingData }) => {
   const onSubmit = async (body) => {
     setIsBidding(true);
     console.log("currentUser", currentUser);
+    console.log("body", body);
     console.log('listing', listing);
 
     try {
-      await axios.post(`/api/bids/`, {
+      await axios.post(`/api/bids/${listing.id}`, {
         amount: body.amount * 100,
         user: listing.user
       });
