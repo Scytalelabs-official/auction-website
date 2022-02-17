@@ -1,5 +1,17 @@
 import { NotFoundError } from '@jjmauction/common';
 import { Message } from 'node-nats-streaming';
+import {
+  InventoryStatus,
+  Listener,
+  PaymentCreatedEvent,
+  Subjects,
+} from 'scytalelabs-auction';
+
+import { Inventory } from '../../models';
+import { Listing } from '../../models';
+import { natsWrapper } from '../../nats-wrapper';
+import { InventoryItemUpdatedPublisher } from '../publishers/inventory-item-updated-publisher';
+import { queueGroupName } from './queue-group-name';
 
 // import {
 //   Listener,
@@ -8,15 +20,11 @@ import { Message } from 'node-nats-streaming';
 //   PaymentCreatedEvent,
 //   Subjects,
 // } from '@jjmauction/common';
-import { Listener } from '../../../../../common/src/events/base-listener';
-import { PaymentCreatedEvent } from '../../../../../common/src/events/payment-created-event';
-import { Subjects } from '../../../../../common/src/events/subjects';
-import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
-import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
-import { Inventory } from '../../models';
-import { Listing } from '../../models';
-import { natsWrapper } from '../../nats-wrapper';
-import { queueGroupName } from './queue-group-name';
+// import { Listener } from '../../../../../common/src/events/base-listener';
+// import { PaymentCreatedEvent } from '../../../../../common/src/events/payment-created-event';
+// import { Subjects } from '../../../../../common/src/events/subjects';
+// import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
+// import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
 
 export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
   queueGroupName = queueGroupName;
@@ -38,6 +46,12 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
     }
     await item.update({ status: InventoryStatus.Fulfilled });
 
+    new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
+      id: listing.inventoryItemId,
+      status: InventoryStatus.Fulfilled,
+      price: item.price,
+      version: item.version,
+    });
     msg.ack();
   }
 }

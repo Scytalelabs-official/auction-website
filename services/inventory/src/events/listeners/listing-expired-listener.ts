@@ -1,6 +1,5 @@
 import { NotFoundError } from '@jjmauction/common';
 import { Message } from 'node-nats-streaming';
-
 // import {
 //   Listener,
 //   ListingExpiredEvent,
@@ -8,14 +7,23 @@ import { Message } from 'node-nats-streaming';
 //   NotFoundError,
 //   Subjects,
 // } from '@jjmauction/common';
-import { Listener } from '../../../../../common/src/events/base-listener';
-import { ListingExpiredEvent } from '../../../../../common/src/events/listing-expired-event';
-import { Subjects } from '../../../../../common/src/events/subjects';
-import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
-import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
+// import { Listener } from '../../../../../common/src/events/base-listener';
+// import { ListingExpiredEvent } from '../../../../../common/src/events/listing-expired-event';
+// import { Subjects } from '../../../../../common/src/events/subjects';
+// import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
+// import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
+import {
+  InventoryStatus,
+  Listener,
+  ListingExpiredEvent,
+  ListingStatus,
+  Subjects,
+} from 'scytalelabs-auction';
+
 import { Listing } from '../../models';
 import { Inventory } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
+import { InventoryItemUpdatedPublisher } from '../publishers/inventory-item-updated-publisher';
 import { queueGroupName } from './queue-group-name';
 
 export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
@@ -35,6 +43,8 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
         ? ListingStatus.Expired
         : ListingStatus.AwaitingPayment;
 
+    await listing.update({ status: newStatus });
+
     const item = await Inventory.findOne({
       where: { id: listing.inventoryItemId },
     });
@@ -44,6 +54,13 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
     if (newStatus === ListingStatus.AwaitingPayment) {
       await item.update({ status: InventoryStatus.Reserved });
     }
+
+    new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
+      id: listing.inventoryItemId,
+      status: InventoryStatus.Reserved,
+      price: item.price,
+      version: item.version,
+    });
     msg.ack();
   }
 }

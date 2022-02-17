@@ -1,6 +1,6 @@
+// import { InventoryStatus } from '../../../../common/src/events/types/inventory-status';
+import { InventoryStatus } from 'scytalelabs-auction';
 import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
-
-import { InventoryStatus } from '../../../../common/src/events/types/inventory-status';
 
 // import SequelizeSlugify from 'sequelize-slugify';
 

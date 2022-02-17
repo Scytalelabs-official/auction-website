@@ -1,17 +1,24 @@
 import { NotFoundError } from '@jjmauction/common';
 import { Message } from 'node-nats-streaming';
-
 // import {
 //   Listener,
 //   ListingCreatedEvent,
 //   ListingStatus,
 //   Subjects,
 // } from '@jjmauction/common';
-import { Listener } from '../../../../../common/src/events/base-listener';
-import { ListingCreatedEvent } from '../../../../../common/src/events/listing-created-event';
-import { Subjects } from '../../../../../common/src/events/subjects';
-import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
-import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
+// import { Listener } from '../../../../../common/src/events/base-listener';
+// import { ListingCreatedEvent } from '../../../../../common/src/events/listing-created-event';
+// import { Subjects } from '../../../../../common/src/events/subjects';
+// import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
+// import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
+import {
+  InventoryStatus,
+  Listener,
+  ListingCreatedEvent,
+  ListingStatus,
+  Subjects,
+} from 'scytalelabs-auction';
+
 import { Listing } from '../../models';
 import { Inventory } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
