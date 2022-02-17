@@ -70,6 +70,8 @@ router.post(
         // salesTax,
         // exciseRate,
         inventoryItemId,
+        quantity,
+        fixPrice,
         /*********/
       } = req.body;
 
@@ -144,6 +146,8 @@ router.post(
           salesTax,
           exciseRate,
           totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
+          quantity,
+          fixPrice,
           /******/
           title,
           description,

@@ -12,6 +12,8 @@ export interface ListingAttributes {
   startPrice: number;
   currentWinnerId?: string;
   /******/
+  quantity: number;
+  fixPrice: number;
   inventoryItemId: string;
   paymentConfirmation: Boolean;
   massOfItem: number;
@@ -88,6 +90,14 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
       },
 
       totalPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      fixPrice: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

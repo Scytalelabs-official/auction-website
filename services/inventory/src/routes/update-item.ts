@@ -50,7 +50,6 @@ router.post(
       }
       item.update(
         {
-          userId: req.currentUser!.id,
           title,
           price,
           massOfItem,
