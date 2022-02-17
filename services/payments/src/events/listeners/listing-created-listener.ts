@@ -15,6 +15,7 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
       id,
       winnerId: '',
       amount: price,
+      paymentConfirmation: false,
     });
 
     msg.ack();

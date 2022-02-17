@@ -62,6 +62,7 @@ router.post(
       name,
       email,
       avatar,
+      isRegister:true,
       version: user.version!,
     });
 

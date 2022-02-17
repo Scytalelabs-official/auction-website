@@ -15,7 +15,7 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
   async onMessage(data: UserCreatedEvent['data'], msg: Message) {
     const { id, name, avatar, email, isRegister, version } = data;
 
-    await User.create({ id, name, avatar, email, version });
+    await User.create({ id, name, avatar, email, isRegister, version });
 
     msg.ack();
   }

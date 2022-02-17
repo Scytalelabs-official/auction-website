@@ -5,10 +5,6 @@ import {
   validateRequest,
 } from '@jjmauction/common';
 import cloudinary from 'cloudinary';
-// import cloudinary , {v2} from 'cloudinary';
-// var local_cloudinary = require('cloudinary').v2;
-
-
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -16,6 +12,9 @@ import multer from 'multer';
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
 import { Inventory, Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
+
+// import cloudinary , {v2} from 'cloudinary';
+// var local_cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
 
@@ -81,7 +80,6 @@ router.post(
           { width: 1280, height: 1280 },
         ],
       });
-      console.log("HELLO");
 
       /*************/
 
@@ -130,19 +128,6 @@ router.post(
 
       /*************/
 
-      let exciseprice = (exciseRate / 100) * price
-      console.log('exciseprice', exciseprice);
-      let massprice = (taxByMassOfItem / 100) * massOfItem
-      console.log('massprice', massprice);
-      // console.log('price',price);
-      // console.log('exciseprice',exciseprice);
-      // console.log('taxAmount',taxAmount);
-      let sum = Number(price) + Number(exciseprice) + Number(taxAmount) + Number(massprice)
-      console.log('price', price);
-      console.log('exciseprice', exciseprice);
-      console.log('taxAmount', taxAmount);
-      console.log('massprice', massprice);
-      console.log('sum', sum);
       const listing = await Listing.create(
         {
           userId: req.currentUser.id,
@@ -166,7 +151,7 @@ router.post(
         },
         { transaction }
       );
-      console.log("HELLO");
+
       new ListingCreatedPublisher(natsWrapper.client).publish({
         id: listing.id,
         userId: req.currentUser.id,

@@ -66,17 +66,15 @@ import { socketIOWrapper } from './socket-io-wrapper';
       throw new Error('NATS_CLUSTER_ID must be defined');
     }
 
-     console.log("Cloud Name", process.env.CLOUDINARY_CLOUD_NAME);
-    console.log("Api Key", process.env.CLOUDINARY_API_KEY);
-    console.log("Api Secret", process.env.CLOUDINARY_API_SECRET);
+    //  console.log("Cloud Name", process.env.CLOUDINARY_CLOUD_NAME);
+    // console.log("Api Key", process.env.CLOUDINARY_API_KEY);
+    // console.log("Api Secret", process.env.CLOUDINARY_API_SECRET);
     // @ts-ignore
     await cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME /*'scytalelabs'*/,
       api_key: process.env.CLOUDINARY_API_KEY /*'432183885194623'*/,
       api_secret:
         process.env.CLOUDINARY_API_SECRET /*'mZAxNn0YNm7YxPOMAvrBP0UIUfU'*/,
-        secure: true
-
     });
     // local_cloudinary.config({
     //     cloud_name: 'scytalelabs>',

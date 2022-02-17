@@ -5,6 +5,9 @@ export interface UserAttributes {
   name: string;
   email: string;
   avatar: string;
+  /*************/
+  isRegister: Boolean;
+  /*************/
   createdAt?: Date;
   version?: number;
 }
@@ -41,6 +44,13 @@ const UserFactory = (sequelize: Sequelize): UserStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      /*************/
+      isRegister: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        // defaultValue: false
+      },
+      /*************/
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
