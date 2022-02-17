@@ -1,8 +1,10 @@
 import { BadRequestError, currentUser } from '@jjmauction/common';
 import express, { Request, Response } from 'express';
-const keccak256 = require('keccak256')
+import keccak256 from 'keccak256';
 
-import { User, Kyc } from '../models';
+import { Kyc, User } from '../models';
+
+// const keccak256 = require('keccak256');
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ router.post(
       where: { id: req.currentUser.id },
     });
 
-    if(currentUser === null){
+    if (currentUser === null) {
       throw new BadRequestError('User not found for KYC');
     }
 
@@ -28,27 +30,25 @@ router.post(
       throw new BadRequestError('Invalid client Id');
     }
 
-
-
     if (req.body.status === 'approved' && currentUser !== null) {
       const kyc = await Kyc.create({
-      userId: req.currentUser.id,
-      guid: req.body.guid,
-      status: req.body.status,
-      clientId: req.body.clientId,
-      event: req.body.event,
-      recordId: req.body.recordId,
-      refId: req.body.refId,
-      submitCount: req.body.submitCount,
-      blockPassID: req.body.blockPassID,
-      isArchived: req.body.isArchived,
-      inreviewDate: req.body.inreviewDate,
-      waitingDate: req.body.waitingDate,
-      approvedDate: req.body.approvedDate,
-      isPing: req.body.isPing,
-      env: req.body.env,
-      webhookId: req.body.webhookId,
-    });
+        userId: req.currentUser.id,
+        guid: req.body.guid,
+        status: req.body.status,
+        clientId: req.body.clientId,
+        event: req.body.event,
+        recordId: req.body.recordId,
+        refId: req.body.refId,
+        submitCount: req.body.submitCount,
+        blockPassID: req.body.blockPassID,
+        isArchived: req.body.isArchived,
+        inreviewDate: req.body.inreviewDate,
+        waitingDate: req.body.waitingDate,
+        approvedDate: req.body.approvedDate,
+        isPing: req.body.isPing,
+        env: req.body.env,
+        webhookId: req.body.webhookId,
+      });
 
       let hashGuid = keccak256(req.body.guid).toString('hex');
       let hashStatus = keccak256(req.body.status).toString('hex');
@@ -75,4 +75,4 @@ router.post(
   }
 );
 
-export { router as currentUserRouter };
+export { router as blockpassKyc };

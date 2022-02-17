@@ -19,6 +19,11 @@ export * from './events/listing-expired-event';
 export * from './events/bid-deleted-event';
 export * from './events/subjects';
 export * from './events/types/listing-status';
+export * from './events/types/inventory-status';
+export * from './events/inventory-created-event';
+export * from './events/inventory-deleted-event';
+export * from './events/inventory-updated-event';
+
 export * from './events/user-created-event';
 export * from './events/email-created-event';
 export * from './events/listing-updated-event';

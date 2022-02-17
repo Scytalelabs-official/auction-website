@@ -14,7 +14,7 @@ import { body } from 'express-validator';
 import multer from 'multer';
 
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
-import { Listing, db } from '../models';
+import { Inventory, Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -70,6 +70,7 @@ router.post(
         taxByMassOfItem, //will get this from a table that contains the tax by mass information
         salesTax,
         exciseRate,
+        inventoryItemId,
         /*********/
       } = req.body;
 
@@ -92,14 +93,41 @@ router.post(
         // throw new BadRequestError('Sales tax ambiguous value given');
       } else {
         taxAmount = (salesTax / 100) * price; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
-        console.log("taxAmount", taxAmount);
-
       }
 
-      if ((taxByMassOfItem <= 0 || taxByMassOfItem >= 100) && (exciseRate <= 0 || exciseRate >= 100)) {
-        throw new BadRequestError('Excise Rate not specified');
-        // throw new BadRequestError('There must be one tax type specified');
+      if (
+        (taxByMassOfItem <= 0 || taxByMassOfItem >= 100) &&
+        (exciseRate <= 0 || exciseRate >= 100)
+      ) {
+        // throw new BadRequestError('Excise Rate not specified');
+        throw new BadRequestError('There must be one tax type specified');
       }
+      const item = await Inventory.findOne({
+        where: { id: inventoryItemId },
+      });
+
+      if (!item) {
+        throw new NotFoundError();
+      }
+
+      let exciseprice = (exciseRate / 100) * price;
+      console.log('exciseprice', exciseprice);
+      let massprice = (taxByMassOfItem / 100) * massOfItem;
+      console.log('massprice', massprice);
+      // console.log('price',price);
+      // console.log('exciseprice',exciseprice);
+      // console.log('taxAmount',taxAmount);
+      let sum =
+        Number(price) +
+        Number(exciseprice) +
+        Number(taxAmount) +
+        Number(massprice);
+      console.log('price', price);
+      console.log('exciseprice', exciseprice);
+      console.log('taxAmount', taxAmount);
+      console.log('massprice', massprice);
+      console.log('sum', sum);
+
       /*************/
 
       let exciseprice = (exciseRate / 100) * price
@@ -121,13 +149,13 @@ router.post(
           startPrice: price,
           currentPrice: price,
           /******/
+          inventoryItemId: item.id,
           paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
           salesTax,
           exciseRate,
-          totalPrice:
-            sum, //https://www.investopedia.com/terms/e/excisetax.asp
+          totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
           /******/
           title,
           description,

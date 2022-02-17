@@ -11,6 +11,7 @@ import { body } from 'express-validator';
 import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
 import { Listing, Payment } from '../models';
 import { natsWrapper } from '../nats-wrapper';
+
 // import { stripe } from '../stripe';
 
 const router = express.Router();
@@ -29,7 +30,7 @@ router.post(
       throw new NotFoundError();
     }
     /*************/
-    if (listing.paymentConfirmation===false) {
+    if (listing.paymentConfirmation === false) {
       // throw new NotFoundError();
       throw new BadRequestError(
         'Payment for sold listings require action winners confirmation'

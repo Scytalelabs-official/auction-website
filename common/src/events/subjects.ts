@@ -12,4 +12,8 @@ export enum Subjects {
   PaymentCreated = 'payment:created',
 
   EmailCreated = 'email:created',
+
+  InventoryItemCreated = 'inventoryItem:created',
+  InventoryItemDeleted = 'inventoryItem:deleted',
+  InventoryItemUpdated = 'inventoryItem:updated',
 }

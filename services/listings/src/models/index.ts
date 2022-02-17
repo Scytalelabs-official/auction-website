@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 
+import { InventoryFactory } from './inventory';
 import { ListingFactory } from './listing';
 import { UserFactory } from './user';
 
@@ -13,8 +14,9 @@ const db =
 
 const Listing = ListingFactory(db);
 const User = UserFactory(db);
+const Inventory = InventoryFactory(db);
 
 User.hasMany(Listing);
 Listing.belongsTo(User);
-
-export { db, Listing, User };
+Listing.belongsTo(Inventory);
+export { db, Listing, User, Inventory };
