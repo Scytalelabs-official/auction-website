@@ -66,9 +66,9 @@ router.post(
         /*********/
         paymentConfirmation,
         massOfItem,
-        taxByMassOfItem, //will get this from a table that contains the tax by mass information
-        salesTax,
-        exciseRate,
+        // taxByMassOfItem, //will get this from a table that contains the tax by mass information
+        // salesTax,
+        // exciseRate,
         inventoryItemId,
         /*********/
       } = req.body;
@@ -82,6 +82,9 @@ router.post(
       });
 
       /*************/
+      const taxByMassOfItem = 3;
+      const salesTax = 5;
+      const exciseRate = 15;
 
       let taxAmount;
       if (salesTax <= 0 || salesTax >= 100) {
