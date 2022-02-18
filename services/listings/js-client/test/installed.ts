@@ -58,7 +58,28 @@ const auction = new AUCTIONClient(
   EVENT_STREAM_ADDRESS!
 );
 
-const test = async () => {
+export const contactFunctions = async (
+  userId,
+  startPrice,
+  currentPrice,
+  /******/
+  inventoryItemId,
+  paymentConfirmation,
+  massOfItem,
+  taxByMassOfItem,
+  salesTax,
+  exciseRate,
+  totalPrice, //https://www.investopedia.com/terms/e/excisetax.asp
+  quantity,
+  fixPrice,
+  /******/
+  title,
+  description,
+  expiresAt,
+  imageId,
+  smallImage,
+  largeImage
+) => {
   await auction.setContractHash(SIMPLE_AUCTION_CONTRACT_HASH!);
 
   console.log('... Contract Hash:', SIMPLE_AUCTION_CONTRACT_HASH!);
