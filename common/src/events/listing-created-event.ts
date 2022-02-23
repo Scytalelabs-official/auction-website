@@ -5,9 +5,6 @@ export interface ListingCreatedEvent {
   data: {
     id: string;
     userId: string;
-    /*********/
-    inventoryItemId: string;
-    /*********/
     title: string;
     slug: string;
     price: number;

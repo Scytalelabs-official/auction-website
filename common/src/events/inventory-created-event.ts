@@ -5,6 +5,8 @@ export interface InventoryItemCreatedEvent {
   data: {
     id: string;
     userId: string;
+    listingId: string;
+    soldOut: number;
     // slug: string;
     title: string;
     price: number;

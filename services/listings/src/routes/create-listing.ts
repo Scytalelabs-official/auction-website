@@ -69,7 +69,6 @@ router.post(
         // taxByMassOfItem, //will get this from a table that contains the tax by mass information
         // salesTax,
         // exciseRate,
-        inventoryItemId,
         quantity,
         fixPrice,
         /*********/
@@ -105,13 +104,6 @@ router.post(
         // throw new BadRequestError('Excise Rate not specified');
         throw new BadRequestError('There must be one tax type specified');
       }
-      const item = await Inventory.findOne({
-        where: { id: inventoryItemId },
-      });
-
-      if (!item) {
-        throw new NotFoundError();
-      }
 
       let exciseprice = (exciseRate / 100) * price;
       console.log('exciseprice', exciseprice);
@@ -139,7 +131,6 @@ router.post(
           startPrice: price,
           currentPrice: price,
           /******/
-          inventoryItemId: item.id,
           paymentConfirmation,
           massOfItem,
           taxByMassOfItem,

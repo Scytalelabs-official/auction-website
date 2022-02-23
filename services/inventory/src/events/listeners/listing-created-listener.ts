@@ -31,11 +31,10 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
   subject: Subjects.ListingCreated = Subjects.ListingCreated;
 
   async onMessage(data: ListingCreatedEvent['data'], msg: Message) {
-    const { id, userId, inventoryItemId, title, slug, expiresAt, price } = data;
+    const { id, userId, title, slug, expiresAt, price } = data;
 
-    await Listing.create({
+    const listing = await Listing.create({
       id,
-      inventoryItemId,
       title,
       slug,
       userId,
@@ -45,24 +44,17 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
       status: ListingStatus.Active,
     });
 
-    const item = await Inventory.findOne({
-      where: { id: inventoryItemId },
-    });
-
-    if (!item) {
-      throw new NotFoundError();
-    }
-
-    await item.update({ status: InventoryStatus.Listed });
-
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-      id: inventoryItemId,
+      id: listing.id,
       status: InventoryStatus.Listed,
-      price: item.price,
-      version: item.version,
+      price: listing.currentPrice,
+      version: listing.version,
     });
 
-    await socketIOWrapper.io.of('/socket').to(item.id).emit('listing', item);
+    await socketIOWrapper.io
+      .of('/socket')
+      .to(listing.id)
+      .emit('listing', listing);
 
     msg.ack();
   }

@@ -8,7 +8,7 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
 import { InventoryItemCreatedPublisher } from '../events/publishers/inventory-item-created-publisher';
-import { Inventory, db } from '../models';
+import { Inventory, Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -35,10 +35,27 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     await db.transaction(async (transaction) => {
-      const { title, price, massOfItem, quantity, description } = req.body;
+      const {
+        title,
+        listingId,
+        soldOut,
+        price,
+        massOfItem,
+        quantity,
+        description,
+      } = req.body;
 
+      const listing = await Listing.findOne({
+        where: { id: listingId },
+      });
+
+      if (!listing) {
+        throw new NotFoundError();
+      }
       const item = await Inventory.create(
         {
+          listingId,
+          soldOut,
           userId: req.currentUser!.id,
           title,
           price,
@@ -52,6 +69,8 @@ router.post(
       new InventoryItemCreatedPublisher(natsWrapper.client).publish({
         id: item.id!,
         userId: req.currentUser!.id,
+        listingId,
+        soldOut,
         // slug: item.slug!,
         title,
         price,

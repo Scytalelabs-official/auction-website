@@ -14,7 +14,6 @@ export interface ListingAttributes {
   /******/
   quantity: number;
   fixPrice: number;
-  inventoryItemId: string;
   paymentConfirmation: Boolean;
   massOfItem: number;
   taxByMassOfItem: number;
@@ -60,10 +59,6 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         defaultValue: null,
       },
       /*************/
-      inventoryItemId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
       paymentConfirmation: {
         type: DataTypes.BOOLEAN,
         allowNull: true,

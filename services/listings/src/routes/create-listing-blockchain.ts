@@ -1,5 +1,6 @@
 import {
   BadRequestError,
+  ListingStatus,
   NotFoundError,
   requireAuth,
   validateRequest,
@@ -9,12 +10,10 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
+import { store } from '../../jsClient/test/installed';
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
 import { Inventory, Listing, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
-
-// import cloudinary , {v2} from 'cloudinary';
-// var local_cloudinary = require('cloudinary').v2;
 
 const router = express.Router();
 
@@ -133,43 +132,72 @@ router.post(
 
       /*************/
 
-      const listing = await Listing.create(
-        {
-          userId: req.currentUser.id,
-          startPrice: price,
-          currentPrice: price,
-          /******/
-          inventoryItemId: item.id,
-          paymentConfirmation,
-          massOfItem,
-          taxByMassOfItem,
-          salesTax,
-          exciseRate,
-          totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
-          quantity,
-          fixPrice,
-          /******/
-          title,
-          description,
-          expiresAt,
-          imageId: result.public_id,
-          smallImage: result.eager[0].secure_url,
-          largeImage: result.eager[1].secure_url,
-        },
-        { transaction }
+      const blockchainResult = store(
+        Date.now.toString(),
+        title,
+        req.currentUser.id,
+        price,
+        ListingStatus.Active,
+        expiresAt,
+        price,
+        req.currentUser.id,
+        inventoryItemId,
+        paymentConfirmation,
+        massOfItem,
+        taxByMassOfItem.toString(),
+        salesTax.toString(),
+        exciseRate.toString(),
+        sum.toString(),
+        req.currentUser.id,
+        title,
+        description,
+        result.public_id,
+        result.eager[0].secure_url,
+        result.eager[1].secure_url,
+        '1'
       );
 
-      new ListingCreatedPublisher(natsWrapper.client).publish({
-        id: listing.id,
-        userId: req.currentUser.id,
-        slug: listing.slug,
-        title,
-        price,
-        expiresAt,
-        version: listing.version,
-      });
+      if (!blockchainResult) {
+        const listing = await Listing.create(
+          {
+            userId: req.currentUser.id,
+            startPrice: price,
+            currentPrice: price,
+            /******/
+            inventoryItemId: item.id,
+            paymentConfirmation,
+            massOfItem,
+            taxByMassOfItem,
+            salesTax,
+            exciseRate,
+            totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
+            quantity,
+            fixPrice,
+            /******/
+            title,
+            description,
+            expiresAt,
+            imageId: result.public_id,
+            smallImage: result.eager[0].secure_url,
+            largeImage: result.eager[1].secure_url,
+          },
+          { transaction }
+        );
 
-      res.status(201).send(listing);
+        new ListingCreatedPublisher(natsWrapper.client).publish({
+          id: listing.id,
+          userId: req.currentUser.id,
+          slug: listing.slug,
+          title,
+          price,
+          expiresAt,
+          version: listing.version,
+        });
+
+        res.status(201).send(listing);
+      } else {
+        res.status(400).send(blockchainResult);
+      }
     });
   }
 );

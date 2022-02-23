@@ -6,6 +6,8 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 export interface InventoryAttributes {
   id?: string;
+  listingId: string;
+  soldOut: number;
   userId: string;
   // slug?: string;
   title: string;
@@ -40,6 +42,14 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
       },
       userId: {
         type: DataTypes.UUID,
+        allowNull: false,
+      },
+      listingId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      soldOut: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       // slug: {
