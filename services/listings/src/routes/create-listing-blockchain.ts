@@ -149,6 +149,8 @@ router.post(
         exciseRate.toString(),
         sum.toString(),
         req.currentUser.id,
+        fixPrice,
+        quantity,
         title,
         description,
         result.public_id,
@@ -157,47 +159,7 @@ router.post(
         '1'
       );
 
-      if (!blockchainResult) {
-        const listing = await Listing.create(
-          {
-            userId: req.currentUser.id,
-            startPrice: price,
-            currentPrice: price,
-            /******/
-            inventoryItemId: item.id,
-            paymentConfirmation,
-            massOfItem,
-            taxByMassOfItem,
-            salesTax,
-            exciseRate,
-            totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
-            quantity,
-            fixPrice,
-            /******/
-            title,
-            description,
-            expiresAt,
-            imageId: result.public_id,
-            smallImage: result.eager[0].secure_url,
-            largeImage: result.eager[1].secure_url,
-          },
-          { transaction }
-        );
-
-        new ListingCreatedPublisher(natsWrapper.client).publish({
-          id: listing.id,
-          userId: req.currentUser.id,
-          slug: listing.slug,
-          title,
-          price,
-          expiresAt,
-          version: listing.version,
-        });
-
-        res.status(201).send(listing);
-      } else {
-        res.status(400).send(blockchainResult);
-      }
+      res.status(400).send(blockchainResult);
     });
   }
 );
