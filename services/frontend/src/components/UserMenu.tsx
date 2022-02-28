@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import xw from 'xwind/macro';
 
@@ -65,6 +66,7 @@ const UserMenu = () => {
     setAuth,
   } = useContext(AppContext);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const router = useRouter();
 
   const handleEscape = (e: any) => {
     if (e.key === 'Esc' || e.key === 'Escape') {
@@ -76,6 +78,7 @@ const UserMenu = () => {
     try {
       await axios.post('/api/auth/signout');
       setAuth({ isAuthenticated: false, currentUser: null });
+      router.push('/');
     } catch (err) {}
   };
 

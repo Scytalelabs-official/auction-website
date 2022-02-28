@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { toast } from 'react-toastify';
 import xw from 'xwind/macro';
 
+import AppContext from '../context/app-context';
 import { centsToDollars } from '../utils/cents-to-dollars';
 import Countdown from './Countdown';
+
 
 interface IProps {
   name: string;
@@ -46,11 +49,31 @@ const StyledImg = styled.img(xw`
 `);
 
 const ListingCard = ({ name, price, slug, smallImage, expiresAt }: IProps) => {
+
+  const {
+    auth: { isAuthenticated, currentUser },
+    setAuth,
+  } = useContext(AppContext);
+  console.log("isAuthenticated", isAuthenticated);
   return (
     <StyledListingCard>
-      <Link href={slug}>
+      {isAuthenticated ? (
+        <Link href={slug}>
+          <StyledCardContent>
+            <StyledImg src={smallImage} alt={name} />
+            <TextWrapper>
+              <StyledText>
+                <Countdown expiresAt={expiresAt} />
+              </StyledText>
+              <StyledPrice>{centsToDollars(price)}</StyledPrice>
+            </TextWrapper>
+          </StyledCardContent>
+        </Link>
+      ) : (
         <StyledCardContent>
-          <StyledImg src={smallImage} alt={name} />
+          <StyledImg onClick={()=>{
+            toast.error("You must sign in first to view more")
+          }} src={smallImage} alt={name} />
           <TextWrapper>
             <StyledText>
               <Countdown expiresAt={expiresAt} />
@@ -58,7 +81,7 @@ const ListingCard = ({ name, price, slug, smallImage, expiresAt }: IProps) => {
             <StyledPrice>{centsToDollars(price)}</StyledPrice>
           </TextWrapper>
         </StyledCardContent>
-      </Link>
+      )}
     </StyledListingCard>
   );
 };

@@ -96,11 +96,14 @@ const Sold = ({ listingsData }) => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {listings.map((listing) => (
+                    {listings.map((listing, index) => (
+                      // <div key={index}>
                       <ListingDashboardTableRow
+                        index={index}
                         listing={listing}
                         onDelete={() => onDelete(listing.id)}
                       />
+                      // </div>
                     ))}
                     {!listings.length && (
                       <p className="m-4 max-w-2xl text-l">

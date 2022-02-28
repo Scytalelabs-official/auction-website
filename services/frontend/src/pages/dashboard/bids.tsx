@@ -14,7 +14,9 @@ const Bids = ({ bidsData }) => {
   const {
     auth: { isAuthenticated },
   } = useContext(AppContext);
-  const [bids, setBids] = useState(bidsData);
+  console.log("bidsData",bidsData);
+  
+  const [bids, setBids] = useState(bidsData===null?[]:bidsData);
 
   const onDelete = async (bidId) => {
     try {

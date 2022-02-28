@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import xw from 'xwind/macro';
 
@@ -145,11 +146,13 @@ const Navbar = () => {
     setAuth,
   } = useContext(AppContext);
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const router = useRouter();
 
   const onClick = async () => {
     try {
       await axios.post('/api/auth/signout');
       setAuth({ isAuthenticated: false, currentUser: null });
+      router.push('/');
     } catch (err) {}
   };
 

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import xw from 'xwind/macro';
 import * as Yup from 'yup';
 
+import BlockPass from './blockpass';
 import AppContext from '../../context/app-context';
 
 const StyledErrorMessage = styled.div(xw`
@@ -30,6 +31,7 @@ const validationSchema = Yup.object({
 const SignIn = () => {
   const { setAuth } = useContext(AppContext);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (body) => {
@@ -37,9 +39,18 @@ const SignIn = () => {
 
     try {
       const { data } = await axios.post('/api/auth/signin', body);
-      setAuth({ isAuthenticated: true, currentUser: data });
-      toast.success('Sucessfully signed in!');
-      router.push('/');
+      if(data.isRegister) {
+        setAuth({ isAuthenticated: true, currentUser: data });
+        toast.success('Sucessfully signed in!');
+        router.push('/');
+      } else {
+        await axios.post('/api/auth/signout');
+        setAuth({ isAuthenticated: false, currentUser: null });
+        toast.info('Please Fill KYC Form First!');
+        setIsRegister(true)
+      }
+      console.log('data',data);
+      
     } catch (err) {
       err.response.data.errors.forEach((err) => toast.error(err.message));
     }
@@ -48,11 +59,14 @@ const SignIn = () => {
   };
 
   return (
-    <>
+      <>
       <Head>
         <title>Sign In | auctionweb.site</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
+      {isRegister ? (
+        <BlockPass setIsRegister={setIsRegister}/>
+    ) : (
       <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md md:w-full">
           <img
@@ -99,7 +113,7 @@ const SignIn = () => {
                     Password
                   </label>
                   <Field
-                    type="text"
+                    type="password"
                     name="password"
                     className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
@@ -122,7 +136,10 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-    </>
+    )}
+      </>
+      
+    
   );
 };
 

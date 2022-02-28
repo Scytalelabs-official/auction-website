@@ -12,8 +12,10 @@ import Breadcrumb from '../components/Breadcrumb';
 import Breadcrumbs from '../components/Breadcrumbs';
 import DatePicker from '../components/DatePicker';
 import Error from '../components/ErrorMessage';
+import SOPUpload from '../components/sopUpload';
 import ImageUpload from '../components/ImageUpload';
 import AppContext from '../context/app-context';
+import LabReportsUpload from '../components/labReportsUpload';
 
 const StyledErrorMessage = styled.div(xw`
     text-sm
@@ -29,16 +31,37 @@ const validationSchema = Yup.object({
     .max(5000, 'Must be 5000 characters or less')
     .required('Required'),
   image: Yup.mixed().required('Required'),
+  // sop: Yup.mixed().required('Required'),
+  // labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
       'The start price must be a number with at most 2 decimals'
     )
     .required('Required'),
+  fixPrice: Yup.string()
+    .matches(
+      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+      'The fix price must be a number with at most 2 decimals'
+    )
+    .required('Required'),
+  quantity: Yup.string()
+    .matches(
+      /^\s*-?(\d)*$/,
+      'The quantity must be a Whole number'
+    )
+    .required('Required'),
+  massOfItem: Yup.string()
+    .matches(
+      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+      'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
+    )
+    .required('Required'),
+
   expiresAt: Yup.date()
     .required('Required')
     .min(
-      new Date(Date.now() + 86400000),
+      new Date(Date.now() + 6400000),
       'Auctions must last atleast 24 hours'
     ),
 });
@@ -54,13 +77,28 @@ const Sell = () => {
 
     try {
       body.price *= 100;
+      body.fixPrice *= 100;
+      body.paymentConfirmation = true;
       const formData = new FormData();
+      console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
+      // paymentConfirmation,
+      // massOfItem,
+      // taxByMassOfItem, //will get this from a table that contains the tax by mass information 
+      // salesTax,
+      // exciseRate,
+      // Display the values
+      for (var value of formData.values()) {
+        console.log(value);
+      }
       const { data } = await axios.post('/api/listings', formData);
       toast.success('Sucessfully listed item for sale!');
       Router.push(`/listings/${data.slug}`);
     } catch (err) {
-      err.response.data.errors.forEach((err) => toast.error(err.message));
+      console.log('err', err);
+      console.log('err', err.response);
+
+      err.response.data?.errors.forEach((err) => toast.error(err.message));
     }
 
     setIsSubmitting(false);
@@ -97,14 +135,22 @@ const Sell = () => {
             title: '',
             description: '',
             price: '',
+            massOfItem: '',
+            quantity: '',
+            fixPrice: '',
             expiresAt: '',
             image: '',
+            // sop:'',
+            // labReports:'',
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
           {(props) => (
+            
             <Form className="space-y-8 py-5 divide-y divide-gray-200">
+              {console.log("props",props)}
+            
               <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                 <div className="space-y-6 sm:space-y-5">
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -167,6 +213,45 @@ const Sell = () => {
                       />
                     </div>
                   </div>
+                  {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="sop"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      SOP
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <SOPUpload
+                        name="sop"
+                        setFieldValue={props.setFieldValue}
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="sop"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="labReports"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Lab Reports
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <LabReportsUpload
+                        name="labReports"
+                        setFieldValue={props.setFieldValue}
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="labReports"
+                      />
+                    </div>
+                  </div> */}
+
 
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
@@ -187,7 +272,68 @@ const Sell = () => {
                       />
                     </div>
                   </div>
-
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="fixPrice"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Fix Price
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="text"
+                        name="fixPrice"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="fixPrice"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="quantity"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Quantity
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="text"
+                        name="quantity"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="quantity"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="massOfItem"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Mass of Item
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">g</span>
+                        </div>
+                        <Field
+                          type="number"
+                          name="massOfItem"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
+                        />
+                      </div>
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="massOfItem"
+                      />
+                    </div>
+                  </div>
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
                       htmlFor="endDate"
