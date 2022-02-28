@@ -15,19 +15,17 @@ const Home = () => {
             <div className="py-12">
               <div className="max-w-lg lg:max-w-md mx-auto lg:mx-0 mb-8 text-center lg:text-left">
                 <h2 className="text-3xl md:text-4xl mb-4 font-bold font-heading">
-                  <span>A </span>
+                  {/* <span>A </span>
                   <span className="text-indigo-600">full stack</span>
-                  <span> Auction Website</span>
+                  <span> Auction Website</span> */}
+                  <span className="text-indigo-600">Auction Website</span>
+                  
                 </h2>
                 <p className="mb-8 text-gray-700 leading-relaxed">
-                  This is not a real store and is hosted for demo purposes only.
-                  This site utilizes a microservices architecutre and is written
-                  using TypeScript, Node.js, MySQL, Docker and Kubernetes for
-                  the backend, with React, Next.js, TailwindCSS and Emotion.js
-                  for the frontend.
+                Decentralized auctions using blockchain smart contracts.
                 </p>
               </div>
-              <div className="text-center lg:text-left">
+              {/* <div className="text-center lg:text-left">
                 <Link href="/listings">
                   <a className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Browse Listings
@@ -39,7 +37,7 @@ const Home = () => {
                 >
                   View the Code
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="w-full lg:w-1/2 px-3 lg:bg-blueGray-50 mb-12 lg:mb-0">

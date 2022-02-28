@@ -47,7 +47,7 @@ router.post(
       email,
       avatar,
       password: hashedPassword,
-      isRegister: false
+      isRegister: true
     });
 
     const userJwt = jwt.sign(
@@ -62,7 +62,7 @@ router.post(
       name,
       email,
       avatar,
-      isRegister:false,
+      isRegister:true,
       version: user.version!,
     });
 

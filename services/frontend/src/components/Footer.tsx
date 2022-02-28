@@ -24,11 +24,12 @@ const Footer = () => {
   return (
     <StyledFooter>
       <StyledText>
-        © 2021 Jarrod Malkovic. This is not a real store and is hosted for demo
+        © 2022 Scytalelabs. All rights reserved.
+        {/* This is not a real store and is hosted for demo
         purposes only. All database records are cleared regularly. See the code{' '}
         <StyledLink href="https://github.com/jarrodmalkovic/auction-website">
           here.
-        </StyledLink>
+        </StyledLink> */}
       </StyledText>
     </StyledFooter>
   );
