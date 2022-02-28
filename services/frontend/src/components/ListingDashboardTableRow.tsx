@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { centsToDollars } from '../utils/cents-to-dollars';
 import Countdown from './Countdown';
 
-const ListingDashboardTableRow = ({ listing, onDelete }) => {
+const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen }) => {
   return (
-    <tr>
+    <tr key={index}>
       <td className="px-6 py-4 whitespace-nowrap">
         <Link href={`/listings/${listing.slug}`}>
           <a className="hover:underline text-sm text-gray-900">
@@ -45,6 +45,21 @@ const ListingDashboardTableRow = ({ listing, onDelete }) => {
           Delete
         </button>
       </td>
+      {tab === "inventory" ? (
+        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <button
+            onClick={() => {
+              console.log("SETOPEN");
+
+              setOpen(true)
+            }}
+            className="text-indigo-600 hover:text-indigo-900"
+          >
+            Edit
+          </button>
+        </td>
+      ) : (null)}
+
     </tr>
   );
 };

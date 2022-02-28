@@ -8,6 +8,7 @@ const DashboardTabs = () => {
       <Tab link="/dashboard/sold" name="Sold Listings" />
       <Tab link="/dashboard/expired" name="Expired Listings" />
       <Tab link="/dashboard/bids" name="Your Bids" />
+      <Tab link="/dashboard/inventory" name="Inventory" />
     </Tabs>
   );
 };

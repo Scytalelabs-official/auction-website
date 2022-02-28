@@ -12,8 +12,10 @@ import Breadcrumb from '../components/Breadcrumb';
 import Breadcrumbs from '../components/Breadcrumbs';
 import DatePicker from '../components/DatePicker';
 import Error from '../components/ErrorMessage';
+import SOPUpload from '../components/sopUpload';
 import ImageUpload from '../components/ImageUpload';
 import AppContext from '../context/app-context';
+import LabReportsUpload from '../components/labReportsUpload';
 
 const StyledErrorMessage = styled.div(xw`
     text-sm
@@ -29,10 +31,24 @@ const validationSchema = Yup.object({
     .max(5000, 'Must be 5000 characters or less')
     .required('Required'),
   image: Yup.mixed().required('Required'),
+  // sop: Yup.mixed().required('Required'),
+  // labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
       'The start price must be a number with at most 2 decimals'
+    )
+    .required('Required'),
+  fixPrice: Yup.string()
+    .matches(
+      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+      'The fix price must be a number with at most 2 decimals'
+    )
+    .required('Required'),
+  quantity: Yup.string()
+    .matches(
+      /^\s*-?(\d)*$/,
+      'The quantity must be a Whole number'
     )
     .required('Required'),
   massOfItem: Yup.string()
@@ -41,24 +57,7 @@ const validationSchema = Yup.object({
       'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
     )
     .required('Required'),
-  taxByMassOfItem: Yup.string()
-    .matches(
-      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
-      'The Tax by Mass of Item should be between Zero and Hundred and it must be a number with at most 2 decimals.'
-    )
-    .required('Required'),
-  salesTax: Yup.string()
-    .matches(
-      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
-      'The Sales Tax should be between Zero and Hundred and it must be a number with at most 2 decimals.'
-    )
-    .required('Required'),
-  exciseRate: Yup.string()
-    .matches(
-      /(^100(\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\.[0-9]{1,2})?$)/,
-      'The Exise Rate should be between Zero and Hundred and it must be a number with at most 2 decimals.'
-    )
-    .required('Required'),
+
   expiresAt: Yup.date()
     .required('Required')
     .min(
@@ -78,6 +77,7 @@ const Sell = () => {
 
     try {
       body.price *= 100;
+      body.fixPrice *= 100;
       body.paymentConfirmation = true;
       const formData = new FormData();
       console.log('body', body);
@@ -98,7 +98,7 @@ const Sell = () => {
       console.log('err', err);
       console.log('err', err.response);
 
-      err.response.data.errors.forEach((err) => toast.error(err.message));
+      err.response.data?.errors.forEach((err) => toast.error(err.message));
     }
 
     setIsSubmitting(false);
@@ -136,17 +136,21 @@ const Sell = () => {
             description: '',
             price: '',
             massOfItem: '',
-            taxByMassOfItem: '',
-            salesTax: '',
-            exciseRate: '',
+            quantity: '',
+            fixPrice: '',
             expiresAt: '',
             image: '',
+            // sop:'',
+            // labReports:'',
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
           {(props) => (
+            
             <Form className="space-y-8 py-5 divide-y divide-gray-200">
+              {console.log("props",props)}
+            
               <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                 <div className="space-y-6 sm:space-y-5">
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -209,6 +213,45 @@ const Sell = () => {
                       />
                     </div>
                   </div>
+                  {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="sop"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      SOP
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <SOPUpload
+                        name="sop"
+                        setFieldValue={props.setFieldValue}
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="sop"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="labReports"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Lab Reports
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <LabReportsUpload
+                        name="labReports"
+                        setFieldValue={props.setFieldValue}
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="labReports"
+                      />
+                    </div>
+                  </div> */}
+
 
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
@@ -226,6 +269,44 @@ const Sell = () => {
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="price"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="fixPrice"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Fix Price
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="text"
+                        name="fixPrice"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="fixPrice"
+                      />
+                    </div>
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="quantity"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Quantity
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <Field
+                        type="text"
+                        name="quantity"
+                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        component={StyledErrorMessage}
+                        name="quantity"
                       />
                     </div>
                   </div>
@@ -250,78 +331,6 @@ const Sell = () => {
                       <ErrorMessage
                         component={StyledErrorMessage}
                         name="massOfItem"
-                      />
-                    </div>
-                  </div>
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="taxByMassOfItem"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Tax By Mass of Item
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">$</span>
-                        </div>
-                        <Field
-                          type="number"
-                          name="taxByMassOfItem"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
-                        />
-                      </div>
-                      <ErrorMessage
-                        component={StyledErrorMessage}
-                        name="taxByMassOfItem"
-                      />
-                    </div>
-                  </div>
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="salesTax"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Sales Tax
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">%</span>
-                        </div>
-                        <Field
-                          type="number"
-                          name="salesTax"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
-                        />
-                      </div>
-                      <ErrorMessage
-                        component={StyledErrorMessage}
-                        name="salesTax"
-                      />
-                    </div>
-                  </div>
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="exciseRate"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Excise Rate
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">%</span>
-                        </div>
-                        <Field
-                          type="number"
-                          name="exciseRate"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
-                        />
-                      </div>
-                      <ErrorMessage
-                        component={StyledErrorMessage}
-                        name="exciseRate"
                       />
                     </div>
                   </div>

@@ -66,10 +66,11 @@ router.post(
         /*********/
         paymentConfirmation,
         massOfItem,
-        taxByMassOfItem, //will get this from a table that contains the tax by mass information
-        salesTax,
-        exciseRate,
-        inventoryItemId,
+        // taxByMassOfItem, //will get this from a table that contains the tax by mass information
+        // salesTax,
+        // exciseRate,
+        quantity,
+        fixPrice,
         /*********/
       } = req.body;
 
@@ -82,6 +83,9 @@ router.post(
       });
 
       /*************/
+      const taxByMassOfItem = 3;
+      const salesTax = 5;
+      const exciseRate = 15;
 
       let taxAmount;
       if (salesTax <= 0 || salesTax >= 100) {
@@ -99,13 +103,6 @@ router.post(
       ) {
         // throw new BadRequestError('Excise Rate not specified');
         throw new BadRequestError('There must be one tax type specified');
-      }
-      const item = await Inventory.findOne({
-        where: { id: inventoryItemId },
-      });
-
-      if (!item) {
-        throw new NotFoundError();
       }
 
       let exciseprice = (exciseRate / 100) * price;
@@ -134,13 +131,14 @@ router.post(
           startPrice: price,
           currentPrice: price,
           /******/
-          inventoryItemId: item.id,
           paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
           salesTax,
           exciseRate,
           totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
+          quantity,
+          fixPrice,
           /******/
           title,
           description,
