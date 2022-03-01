@@ -12,10 +12,10 @@ import Breadcrumb from '../components/Breadcrumb';
 import Breadcrumbs from '../components/Breadcrumbs';
 import DatePicker from '../components/DatePicker';
 import Error from '../components/ErrorMessage';
-import SOPUpload from '../components/sopUpload';
 import ImageUpload from '../components/ImageUpload';
-import AppContext from '../context/app-context';
 import LabReportsUpload from '../components/labReportsUpload';
+import SOPUpload from '../components/sopUpload';
+import AppContext from '../context/app-context';
 
 const StyledErrorMessage = styled.div(xw`
     text-sm
@@ -31,8 +31,8 @@ const validationSchema = Yup.object({
     .max(5000, 'Must be 5000 characters or less')
     .required('Required'),
   image: Yup.mixed().required('Required'),
-  // sop: Yup.mixed().required('Required'),
-  // labReports: Yup.mixed().required('Required'),
+  sopDocument: Yup.mixed().required('Required'),
+  labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
@@ -46,10 +46,7 @@ const validationSchema = Yup.object({
     )
     .required('Required'),
   quantity: Yup.string()
-    .matches(
-      /^\s*-?(\d)*$/,
-      'The quantity must be a Whole number'
-    )
+    .matches(/^\s*-?(\d)*$/, 'The quantity must be a Whole number')
     .required('Required'),
   massOfItem: Yup.string()
     .matches(
@@ -60,10 +57,7 @@ const validationSchema = Yup.object({
 
   expiresAt: Yup.date()
     .required('Required')
-    .min(
-      new Date(Date.now() + 6400000),
-      'Auctions must last atleast 24 hours'
-    ),
+    .min(new Date(Date.now() + 6400000), 'Auctions must last atleast 24 hours'),
 });
 
 const Sell = () => {
@@ -84,7 +78,7 @@ const Sell = () => {
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
       // paymentConfirmation,
       // massOfItem,
-      // taxByMassOfItem, //will get this from a table that contains the tax by mass information 
+      // taxByMassOfItem, //will get this from a table that contains the tax by mass information
       // salesTax,
       // exciseRate,
       // Display the values
@@ -140,17 +134,16 @@ const Sell = () => {
             fixPrice: '',
             expiresAt: '',
             image: '',
-            // sop:'',
-            // labReports:'',
+            sopDocument: '',
+            labReports: '',
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
           {(props) => (
-            
             <Form className="space-y-8 py-5 divide-y divide-gray-200">
-              {console.log("props",props)}
-            
+              {console.log('props', props)}
+
               <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                 <div className="space-y-6 sm:space-y-5">
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -213,22 +206,22 @@ const Sell = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="sop"
+                      htmlFor="sopDocument"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      SOP
+                      SOP Document
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                       <SOPUpload
-                        name="sop"
+                        name="sopDocument"
                         setFieldValue={props.setFieldValue}
                         className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
                       />
                       <ErrorMessage
                         component={StyledErrorMessage}
-                        name="sop"
+                        name="sopDocument"
                       />
                     </div>
                   </div>
@@ -250,8 +243,7 @@ const Sell = () => {
                         name="labReports"
                       />
                     </div>
-                  </div> */}
-
+                  </div>
 
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
