@@ -24,6 +24,7 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
       expiresAt,
       startPrice: price,
       currentPrice: price,
+      totalPrice: price,
       status: ListingStatus.Active,
     });
 
