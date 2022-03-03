@@ -33,12 +33,16 @@ export class BidCreatedListener extends Listener<BidCreatedEvent> {
       return msg.ack();
     }
 
-    await listing.update({ currentPrice: amount, currentWinnerId: userId });
+    await listing.update({
+      currentPrice: amount,
+      currentWinnerId: userId,
+      totalPrice: amount,
+    });
 
     new ListingUpdatedPublisher(natsWrapper.client).publish({
       id: listingId,
       status: listing.status,
-      currentPrice: listing.currentPrice,
+      currentPrice: listing.totalPrice,
       currentWinnerId: listing.currentWinnerId,
       version: listing.version,
     });

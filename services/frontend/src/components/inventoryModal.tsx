@@ -9,6 +9,8 @@ import xw from 'xwind/macro';
 import * as Yup from 'yup';
 import DatePicker from '../components/DatePicker';
 import ImageUpload from '../components/ImageUpload';
+import LabReportsUpload from './labReportsUpload';
+import SOPUpload from './sopUpload';
 
 
 const StyledErrorMessage = styled.div(xw`
@@ -24,19 +26,10 @@ const validationSchema = Yup.object({
   description: Yup.string()
     .max(5000, 'Must be 5000 characters or less')
     .required('Required'),
-  image: Yup.mixed().required('Required'),
-  // sop: Yup.mixed().required('Required'),
-  // labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
       'The start price must be a number with at most 2 decimals'
-    )
-    .required('Required'),
-  fixPrice: Yup.string()
-    .matches(
-      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
-      'The fix price must be a number with at most 2 decimals'
     )
     .required('Required'),
   quantity: Yup.string()
@@ -51,18 +44,11 @@ const validationSchema = Yup.object({
       'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
     )
     .required('Required'),
-
-  expiresAt: Yup.date()
-    .required('Required')
-    .min(
-      new Date(Date.now() + 6400000),
-      'Auctions must last atleast 24 hours'
-    ),
 });
 
-export default function InventoryModal(props) {
+export default function InventoryModal(properties) {
 
-  console.log("props", props);
+  console.log("properties", properties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -71,22 +57,14 @@ export default function InventoryModal(props) {
 
     try {
       body.price *= 100;
-      body.fixPrice *= 100;
-      body.paymentConfirmation = true;
-      const formData = new FormData();
+      // const formData = new FormData();
       console.log('body', body);
-      Object.keys(body).forEach((key) => formData.append(key, body[key]));
-      // paymentConfirmation,
-      // massOfItem,
-      // taxByMassOfItem, //will get this from a table that contains the tax by mass information 
-      // salesTax,
-      // exciseRate,
-      // Display the values
-      for (var value of formData.values()) {
-        console.log(value);
-      }
-      const { data } = await axios.post('/api/listings', formData);
-      toast.success('Sucessfully listed item for sale!');
+      // Object.keys(body).forEach((key) => formData.append(key, body[key]));
+      // for (var value of formData.values()) {
+      //   console.log(value);
+      // }
+      const { data } = await axios.post(`/api/inventory/${properties.listing.id}`, body);
+      toast.success('Sucessfully updated items in Inventory!');
       Router.push(`/listings/${data.slug}`);
     } catch (err) {
       console.log('err', err);
@@ -98,7 +76,7 @@ export default function InventoryModal(props) {
     setIsSubmitting(false);
   };
 
-  if (props.open) {
+  if (properties.open) {
 
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -109,25 +87,17 @@ export default function InventoryModal(props) {
             Update Inventory
             <Formik
               initialValues={{
-                title: '',
-                description: '',
-                price: '',
-                massOfItem: '',
-                quantity: '',
-                fixPrice: '',
-                expiresAt: '',
-                image: '',
-                // sop:'',
-                // labReports:'',
+                title: properties.listing.title,
+                description: properties.listing.description,
+                price: properties.listing.currentPrice / 100,
+                massOfItem: properties.listing.massOfItem,
+                quantity: properties.listing.quantity,
               }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
               {(props) => (
-
                 <Form className="space-y-8 py-5 divide-y divide-gray-200">
-                  {console.log("props", props)}
-
                   <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                     <div className="space-y-6 sm:space-y-5">
                       <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -149,7 +119,6 @@ export default function InventoryModal(props) {
                           />
                         </div>
                       </div>
-
                       <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                         <label
                           htmlFor="description"
@@ -173,65 +142,6 @@ export default function InventoryModal(props) {
 
                       <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                         <label
-                          htmlFor="image"
-                          className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                        >
-                          Image
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
-                          <ImageUpload
-                            name="image"
-                            setFieldValue={props.setFieldValue}
-                            className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                          />
-                          <ErrorMessage
-                            component={StyledErrorMessage}
-                            name="image"
-                          />
-                        </div>
-                      </div>
-                      {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="sop"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      SOP
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <SOPUpload
-                        name="sop"
-                        setFieldValue={props.setFieldValue}
-                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                      />
-                      <ErrorMessage
-                        component={StyledErrorMessage}
-                        name="sop"
-                      />
-                    </div>
-                  </div>
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="labReports"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Lab Reports
-                    </label>
-                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                      <LabReportsUpload
-                        name="labReports"
-                        setFieldValue={props.setFieldValue}
-                        className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                      />
-                      <ErrorMessage
-                        component={StyledErrorMessage}
-                        name="labReports"
-                      />
-                    </div>
-                  </div> */}
-
-
-                      <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label
                           htmlFor="price"
                           className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                         >
@@ -246,25 +156,6 @@ export default function InventoryModal(props) {
                           <ErrorMessage
                             component={StyledErrorMessage}
                             name="price"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label
-                          htmlFor="fixPrice"
-                          className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                        >
-                          Fix Price
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
-                          <Field
-                            type="text"
-                            name="fixPrice"
-                            className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                          />
-                          <ErrorMessage
-                            component={StyledErrorMessage}
-                            name="fixPrice"
                           />
                         </div>
                       </div>
@@ -311,39 +202,28 @@ export default function InventoryModal(props) {
                           />
                         </div>
                       </div>
-                      <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label
-                          htmlFor="endDate"
-                          className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                        >
-                          End Date
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
-                          <DatePicker
-                            name="expiresAt"
-                            autocomplete="off"
-                            value={props.values.expiresAt}
-                            onChange={props.setFieldValue}
-                            className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
-                          />
-                          <ErrorMessage
-                            component={StyledErrorMessage}
-                            name="expiresAt"
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
+                  {/* <div className="pt-5"> */}
 
+                  {/* </div> */}
                   <div className="pt-5">
                     <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => properties.setOpen(false)}
+                        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        {'Cancel'}
+                      </button>
                       <button
                         type="submit"
                         className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
-                        {isSubmitting ? 'Updating listing...' : 'Update listing'}
+                        {isSubmitting ? 'Updating Inventory Item...' : 'Update Inventory Item'}
                       </button>
                     </div>
+
                   </div>
                 </Form>
               )}

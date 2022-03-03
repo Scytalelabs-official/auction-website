@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { centsToDollars } from '../utils/cents-to-dollars';
 import Countdown from './Countdown';
 
-const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen }) => {
+const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen,setListing }) => {
   return (
     <tr key={index}>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -50,7 +50,7 @@ const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen }) =>
           <button
             onClick={() => {
               console.log("SETOPEN");
-
+              setListing(listing)
               setOpen(true)
             }}
             className="text-indigo-600 hover:text-indigo-900"

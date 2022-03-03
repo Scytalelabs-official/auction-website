@@ -16,6 +16,8 @@ const Inventory = ({ listingsData }) => {
         auth: { isAuthenticated },
     } = useContext(AppContext);
     const [listings, setListings] = useState(listingsData);
+    const [listing, setListing] = useState([]);
+
     const [open, setOpen] = useState(false)
     console.log('listings', listings);
 
@@ -107,6 +109,7 @@ const Inventory = ({ listingsData }) => {
                                                 onDelete={() => onDelete(listing.id)}
                                                 tab="inventory"
                                                 setOpen={setOpen}
+                                                setListing={setListing}
                                             />
                                             // </div>
                                         ))}
@@ -122,7 +125,7 @@ const Inventory = ({ listingsData }) => {
                     </div>
                 </div>
             </section>
-            <InventoryModal open={open} setOpen={setOpen} />
+            <InventoryModal open={open} setOpen={setOpen} listing={listing}/>
         </>
     );
 };

@@ -23,17 +23,33 @@ const storage = multer.diskStorage({
     callback(null, Date.now() + file.originalname);
   },
 });
+
+// const sop_storage = multer.diskStorage({
+//   filename: function (req, file, callback) {
+//     callback(null, Date.now() + file.originalname);
+//   },
+// });
+
+// const reports_storage = multer.diskStorage({
+//   filename: function (req, file, callback) {
+//     callback(null, Date.now() + file.originalname);
+//   },
+// });
 // local_cloudinary.config({
 //         cloud_name: 'scytalelabs',
 //         api_key: '432183885194623',
 //         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
 //         secure: true
 //     });
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).any('uploadFiles', 3);
+// const sop = multer({ storage: sop_storage });
+// const reports = multer({ storage: reports_storage });
 
 router.post(
   '/api/listings',
   upload.single('image'),
+  upload.single('sopDocument'),
+  upload.single('labReports'),
   requireAuth,
   [
     body('price')

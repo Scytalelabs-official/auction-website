@@ -31,8 +31,8 @@ const validationSchema = Yup.object({
     .max(5000, 'Must be 5000 characters or less')
     .required('Required'),
   image: Yup.mixed().required('Required'),
-  // sop: Yup.mixed().required('Required'),
-  // labReports: Yup.mixed().required('Required'),
+  sopDocument: Yup.mixed().required('Required'),
+  labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
@@ -71,6 +71,9 @@ const Sell = () => {
     auth: { isAuthenticated },
   } = useContext(AppContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [show, setShow] = useState(false);
+  const [options, setOptions] = useState(['North California', 'South California']);
+  const [selectedOption, setSelectedOption] = useState('North California');
 
   const onSubmit = async (body) => {
     setIsSubmitting(true);
@@ -79,18 +82,17 @@ const Sell = () => {
       body.price *= 100;
       body.fixPrice *= 100;
       body.paymentConfirmation = true;
+      body.location = selectedOption;
       const formData = new FormData();
       console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
-      // paymentConfirmation,
-      // massOfItem,
-      // taxByMassOfItem, //will get this from a table that contains the tax by mass information 
-      // salesTax,
-      // exciseRate,
-      // Display the values
-      for (var value of formData.values()) {
-        console.log(value);
+      // Display the key/value pairs
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
       }
+      // for (var value of formData.values()) {
+      //   console.log(value);
+      // }
       const { data } = await axios.post('/api/listings', formData);
       toast.success('Sucessfully listed item for sale!');
       Router.push(`/listings/${data.slug}`);
@@ -140,17 +142,17 @@ const Sell = () => {
             fixPrice: '',
             expiresAt: '',
             image: '',
-            // sop:'',
-            // labReports:'',
+            sopDocument: '',
+            labReports: '',
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
           {(props) => (
-            
+
             <Form className="space-y-8 py-5 divide-y divide-gray-200">
-              {console.log("props",props)}
-            
+              {/* {console.log("props", props)} */}
+
               <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                 <div className="space-y-6 sm:space-y-5">
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -213,22 +215,22 @@ const Sell = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="sop"
+                      htmlFor="sopDocument"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
                       SOP
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                       <SOPUpload
-                        name="sop"
+                        name="sopDocument"
                         setFieldValue={props.setFieldValue}
                         className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500  sm:max-w-4xl sm:text-sm border-gray-300 rounded-md"
                       />
                       <ErrorMessage
                         component={StyledErrorMessage}
-                        name="sop"
+                        name="sopDocument"
                       />
                     </div>
                   </div>
@@ -250,8 +252,53 @@ const Sell = () => {
                         name="labReports"
                       />
                     </div>
-                  </div> */}
+                  </div>
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="price"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Location
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="mt-1 relative">
+                        <button type="button" onClick={() => setShow(!show)} className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                          <span className="flex items-center">
+                            <span className="ml-3 block truncate"> {selectedOption} </span>
+                          </span>
+                          <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        </button>
+                        {show ? (
+                          <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabIndex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
+                            {options.map((opt, idx) => (
+                              <li key={idx} onClick={() => {
+                                setShow(false)
+                                setSelectedOption(opt)
+                              }} className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+                                {console.log("opt", opt)}
+                                <div className="flex items-center">
+                                  <span className="font-normal ml-3 block truncate"> {opt} </span>
+                                </div>
+                                {opt === selectedOption ? (
+                                  <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
+                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                  </span>
+                                ) : (null)}
 
+                              </li>
+                            ))}
+
+                          </ul>
+                        ) : (null)}
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label

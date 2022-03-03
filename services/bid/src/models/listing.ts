@@ -7,6 +7,7 @@ export interface ListingAttributes {
   userId: string;
   expiresAt: Date;
   currentWinnerId?: string;
+  totalPrice: number;
   slug: string;
   title: string;
   startPrice: number;
@@ -41,6 +42,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
       currentWinnerId: {
         type: DataTypes.UUID,
         allowNull: true,
+      },
+      totalPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       status: {
         type: DataTypes.ENUM,

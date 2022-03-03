@@ -82,6 +82,8 @@ const StyledErrorMessage = styled.div(xw`
 const Listing = ({ listingData }) => {
   const [listing, setListing] = useState(listingData);
   const [isBidding, setIsBidding] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
+
   console.log("listing", listing);
 
   const {
@@ -135,6 +137,27 @@ const Listing = ({ listingData }) => {
     }
 
     setIsBidding(false);
+  };
+  const onBuy = async (body) => {
+    setIsBuying(true);
+    console.log("currentUser", currentUser);
+    console.log("body", body);
+    console.log('listing', listing);
+
+    try {
+      await axios.post(`/api/listings/buy/${listing.id}`, {
+        amount: listing.fixPrice,
+        quantity: body.quantity,
+        user: listing.user
+      });
+      toast.success('Sucessfully Bought Item!');
+    } catch (err) {
+      console.log('err', err);
+      console.log('err.response', err.response);
+      err.response.data.errors.forEach((err) => toast.error(err.message));
+    }
+
+    setIsBuying(false);
   };
 
   if (!listing) {
@@ -291,6 +314,7 @@ const Listing = ({ listingData }) => {
                 </div>
                 <button
                   // type="submit"
+                  onClick={() => onBuy}
                   className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   {isBidding ? 'Buying...' : 'Buy now!'}

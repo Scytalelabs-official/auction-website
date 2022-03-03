@@ -8,7 +8,7 @@ import {
 import express, { Request, Response } from 'express';
 
 import { BidCreatedPublisher } from '../events/publishers/bid-created-publisher';
-import { Bid, Listing, db, User } from '../models';
+import { Bid, Listing, User, db } from '../models';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -33,7 +33,7 @@ router.post(
         //   'user not found'
         // );
       }
-       if (user.isRegister === false) {
+      if (user.isRegister === false) {
         throw new BadRequestError(
           'Non registered users cannot place bids on the listings'
         );
@@ -50,7 +50,7 @@ router.post(
         );
       }
 
-      if (listing.currentPrice >= amount) {
+      if (listing.totalPrice >= amount) {
         throw new BadRequestError('Bids must be greater than the current bid');
       }
 

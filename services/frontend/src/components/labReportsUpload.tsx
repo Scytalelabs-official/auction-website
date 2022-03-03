@@ -40,7 +40,6 @@ const LabReportsUpload = (props) => {
     isDragReject,
     acceptedFiles,
   } = useDropzone({
-    // accept: 'image/*',
     onDrop: (acceptedFiles) => {
       setFieldValue('labReports', acceptedFiles[0]);
     },
