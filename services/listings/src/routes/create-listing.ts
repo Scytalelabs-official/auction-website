@@ -36,20 +36,25 @@ const storage = multer.diskStorage({
 //   },
 // });
 // local_cloudinary.config({
-//         cloud_name: 'scytalelabs',
-//         api_key: '432183885194623',
-//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
-//         secure: true
-//     });
-const upload = multer({ storage: storage }).any('uploadFiles', 3);
+//   cloud_name: 'scytalelabs',
+//   api_key: '432183885194623',
+//   api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//   secure: true,
+// });
+const upload = multer({ storage: storage });
 // const sop = multer({ storage: sop_storage });
 // const reports = multer({ storage: reports_storage });
 
 router.post(
   '/api/listings',
-  upload.single('image'),
-  upload.single('sopDocument'),
-  upload.single('labReports'),
+  // upload.single('image'),
+  upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'sopDocument', maxCount: 1 },
+    { name: 'labReports', maxCount: 1 },
+  ]),
+  // upload.single('sopDocument'),
+  // upload.single('labReports'),
   requireAuth,
   [
     body('price')
@@ -91,13 +96,35 @@ router.post(
       } = req.body;
 
       // @ts-ignore
-      const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        eager: [
-          { width: 225, height: 225 },
-          { width: 1280, height: 1280 },
-        ],
-      });
+      console.log('FILESSSSS Result : ', req.files);
+      // @ts-ignore
+      console.log('FILESSSSS Image Result : ', req.files.image);
+      // @ts-ignore
+      console.log('FILESSSSS Image Path Result : ', req.files.image[0].path);
 
+      // @ts-ignore
+      const result = await cloudinary.v2.uploader.upload(req.files.image[0].path,
+        {
+          eager: [
+            { width: 225, height: 225 },
+            { width: 1280, height: 1280 },
+          ],
+        }
+      );
+
+      // @ts-ignore
+      const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
+        { resource_type: 'raw' }
+      );
+
+      // @ts-ignore
+      console.log('LAB Reports Result : ', req.files.labReports);
+      // @ts-ignore
+      const result2 = await cloudinary.v2.uploader.upload(req.files.labReports[0].path,
+        {
+          resource_type: 'raw',
+        }
+      );
       /*************/
       const taxByMassOfItem = 3;
       const salesTax = 5;

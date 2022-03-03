@@ -64,55 +64,58 @@ it('responds with a 404 if the sales tax is 0', async () => {
       expiresAt: Date.now() + 25 * 60 * 60 * 1000,
       paymentConfirmation: true,
       massOfItem: 500,
-      taxByMassOfItem: 25,
-      salesTax: 0,
+      quantity: 25,
+      fixPrice: 0,
       exciseRate: 5,
     })
     .attach('image', '/home/sumair/Desktop/listing_test_case.png')
+    .attach('sopDocument', '/home/sumair/Desktop/OceanFalls-Demo')
+    .attach('labReports', '/home/sumair/Desktop/Git instructions.txt')
+
     .expect(400);
 });
 
-it('responds with a 400 if the sales tax is greater than 100', async () => {
-  const { cookie } = signup();
+// it('responds with a 400 if the sales tax is greater than 100', async () => {
+//   const { cookie } = signup();
 
-  await request(app)
-    .post(`/api/listings`)
-    .set('Cookie', cookie)
-    .field({
-      price: 100,
-      title: 'test',
-      description: 'for test purposes only',
-      expiresAt: Date.now() + 25 * 60 * 60 * 1000,
-      paymentConfirmation: true,
-      massOfItem: 500,
-      taxByMassOfItem: 25,
-      salesTax: 101,
-      exciseRate: 5,
-    })
-    .attach('image', '/home/sumair/Desktop/listing_test_case.png')
-    .expect(400);
-});
+//   await request(app)
+//     .post(`/api/listings`)
+//     .set('Cookie', cookie)
+//     .field({
+//       price: 100,
+//       title: 'test',
+//       description: 'for test purposes only',
+//       expiresAt: Date.now() + 25 * 60 * 60 * 1000,
+//       paymentConfirmation: true,
+//       massOfItem: 500,
+//       quantity: 101,
+//       fixPrice: 25,
+//       exciseRate: 5,
+//     })
+//     .attach('image', '/home/sumair/Desktop/listing_test_case.png')
+//     .expect(400);
+// });
 
-it('responds with a 400 if the taxByMassOfItem and exciseRate both are 0', async () => {
-  const { cookie } = signup();
+// it('responds with a 400 if the taxByMassOfItem and exciseRate both are 0', async () => {
+//   const { cookie } = signup();
 
-  await request(app)
-    .post(`/api/listings`)
-    .set('Cookie', cookie)
-    .field({
-      price: 100,
-      title: 'test',
-      description: 'for test purposes only',
-      expiresAt: Date.now() + 25 * 60 * 60 * 1000,
-      paymentConfirmation: true,
-      massOfItem: 500,
-      taxByMassOfItem: 0,
-      salesTax: 50,
-      exciseRate: 0,
-    })
-    .attach('image', '/home/sumair/Desktop/listing_test_case.png')
-    .expect(400);
-});
+//   await request(app)
+//     .post(`/api/listings`)
+//     .set('Cookie', cookie)
+//     .field({
+//       price: 100,
+//       title: 'test',
+//       description: 'for test purposes only',
+//       expiresAt: Date.now() + 25 * 60 * 60 * 1000,
+//       paymentConfirmation: true,
+//       massOfItem: 500,
+//       quantity: 0,
+//       fixPrice: 50,
+//       exciseRate: 0,
+//     })
+//     .attach('image', '/home/sumair/Desktop/listing_test_case.png')
+//     .expect(400);
+// });
 
 // it('responds with a 400 if the taxByMassOfItem and exciseRate both are 0', async () => {
 //   const { cookie } = signup();
