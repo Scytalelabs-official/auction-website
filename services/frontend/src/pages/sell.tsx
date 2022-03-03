@@ -220,7 +220,7 @@ const Sell = () => {
                       htmlFor="sopDocument"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      SOP
+                      SOP Document
                     </label>
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                       <SOPUpload
