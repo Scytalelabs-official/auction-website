@@ -18,5 +18,5 @@ const Inventory = InventoryFactory(db);
 
 User.hasMany(Listing);
 Listing.belongsTo(User);
-Listing.belongsTo(Inventory);
+// Listing.belongsTo(Inventory);
 export { db, Listing, User, Inventory };

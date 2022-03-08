@@ -6,27 +6,27 @@ export interface ListingAttributes {
   createdAt?: Date;
   slug?: string;
   id?: string;
-  currentPrice: number;
+  currentPrice?: number;
   status?: ListingStatus;
-  expiresAt: Date;
-  startPrice: number;
+  expiresAt?: Date;
+  startPrice?: number;
   currentWinnerId?: string;
   /******/
-  quantity: number;
-  fixPrice: number;
-  paymentConfirmation: Boolean;
-  massOfItem: number;
-  taxByMassOfItem: number;
-  salesTax: number;
-  exciseRate: number;
-  totalPrice: number;
+  quantity?: number;
+  fixPrice?: number;
+  // paymentConfirmation: Boolean;
+  massOfItem?: number;
+  taxByMassOfItem?: number;
+  salesTax?: number;
+  exciseRate?: number;
+  totalPrice?: number;
   /******/
-  userId: string;
-  title: string;
-  description: string;
-  imageId: string;
-  smallImage: string;
-  largeImage: string;
+  userId?: string;
+  title?: string;
+  description?: string;
+  // imageId: string;
+  // smallImage: string;
+  // largeImage: string;
   version?: number;
 }
 
@@ -59,14 +59,14 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         defaultValue: null,
       },
       /*************/
-      paymentConfirmation: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-      },
+      // paymentConfirmation: {
+      //   type: DataTypes.BOOLEAN,
+      //   allowNull: false,
+      // },
 
       massOfItem: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
 
       taxByMassOfItem: {
@@ -114,18 +114,18 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      imageId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      smallImage: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      largeImage: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      // imageId: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // smallImage: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      // largeImage: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
       description: {
         type: DataTypes.STRING,
         allowNull: false,

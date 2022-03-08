@@ -39,7 +39,7 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
     }
 
     const item = await Inventory.findOne({
-      where: { id: listing.inventoryItemId },
+      where: { id: listing.id },
     });
     if (!item) {
       throw new NotFoundError();
@@ -47,7 +47,7 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
     await item.update({ status: InventoryStatus.Fulfilled });
 
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-      id: listing.inventoryItemId,
+      id: item.id,
       status: InventoryStatus.Fulfilled,
       price: item.price,
       version: item.version,

@@ -94,6 +94,8 @@ router.post(
         fixPrice,
         /*********/
       } = req.body;
+      console.log('Payment Confirmation : ', paymentConfirmation);
+      console.log('Mas of Item : ', massOfItem);
 
       // @ts-ignore
       console.log('FILESSSSS Result : ', req.files);
@@ -173,8 +175,7 @@ router.post(
           userId: req.currentUser.id,
           startPrice: price,
           currentPrice: price,
-          /******/
-          paymentConfirmation,
+          // paymentConfirmation: paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
           salesTax,
@@ -182,13 +183,12 @@ router.post(
           totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
           quantity,
           fixPrice,
-          /******/
           title,
           description,
           expiresAt,
-          imageId: result.public_id,
-          smallImage: result.eager[0].secure_url,
-          largeImage: result.eager[1].secure_url,
+          // imageId: result.public_id,
+          // smallImage: result.eager[0].secure_url,
+          // largeImage: result.eager[1].secure_url,
         },
         { transaction }
       );

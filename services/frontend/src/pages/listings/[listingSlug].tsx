@@ -213,7 +213,7 @@ const Listing = ({ listingData }) => {
               <StyledTableRow>
                 <StyledTableRowName>Tax by Mass of Item</StyledTableRowName>
                 <StyledTableRowValue>
-                  {convertToDollars(listing.taxByMassOfItem)}
+                  {listing.taxByMassOfItem}
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>

@@ -3,7 +3,6 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 export interface ListingAttributes {
   id: string;
-  inventoryItemId: string;
   status: ListingStatus;
   userId: string;
   expiresAt: Date;
@@ -36,10 +35,6 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         primaryKey: true,
       },
       userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
-      inventoryItemId: {
         type: DataTypes.UUID,
         allowNull: false,
       },

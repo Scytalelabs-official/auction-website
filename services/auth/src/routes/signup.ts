@@ -56,7 +56,7 @@ router.post(
       },
       process.env.JWT_KEY!
     );
-
+      console.log("User Id : ", user.id);
     await new UserCreatedPublisher(natsWrapper.client).publish({
       id: user.id!,
       name,
