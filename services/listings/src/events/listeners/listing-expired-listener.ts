@@ -1,11 +1,18 @@
+import { Message } from 'node-nats-streaming';
+// import {
+//   Listener,
+//   ListingExpiredEvent,
+//   ListingStatus,
+//   NotFoundError,
+//   Subjects,
+// } from '@jjmauction/common';
 import {
   Listener,
   ListingExpiredEvent,
   ListingStatus,
   NotFoundError,
   Subjects,
-} from '@jjmauction/common';
-import { Message } from 'node-nats-streaming';
+} from 'scytalelabs-auction';
 
 import { Listing } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
@@ -36,6 +43,8 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
       status: listing.status,
       currentPrice: listing.currentPrice,
       currentWinnerId: listing.currentWinnerId,
+      totalPrice: listing.totalPrice,
+      quantity: listing.quantity,
       version: listing.version,
     });
 

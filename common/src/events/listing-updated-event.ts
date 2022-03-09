@@ -8,6 +8,8 @@ export interface ListingUpdatedEvent {
     status: ListingStatus;
     currentPrice: number;
     currentWinnerId: string;
+    totalPrice: number;
+    quantity: number;
     version: number;
   };
 }

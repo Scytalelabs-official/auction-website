@@ -1,9 +1,15 @@
+// import {
+//   BadRequestError,
+//   NotFoundError,
+//   requireAuth,
+//   validateRequest,
+// } from '@jjmauction/common';
 import {
   BadRequestError,
   NotFoundError,
   requireAuth,
   validateRequest,
-} from '@jjmauction/common';
+} from 'scytalelabs-auction';
 import cloudinary from 'cloudinary';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
@@ -94,9 +100,7 @@ router.post(
         fixPrice,
         /*********/
       } = req.body;
-      console.log('Payment Confirmation : ', paymentConfirmation);
-      console.log('Mas of Item : ', massOfItem);
-
+     
       // @ts-ignore
       console.log('FILESSSSS Result : ', req.files);
       // @ts-ignore
@@ -167,6 +171,11 @@ router.post(
       console.log('taxAmount', taxAmount);
       console.log('massprice', massprice);
       console.log('sum', sum);
+      console.log('Payment Confirmation : ', paymentConfirmation);
+      console.log('Mas of Item : ', massOfItem);
+       console.log('Tax by Mass of Item : ', taxByMassOfItem);
+      console.log('Fix Price : ', fixPrice);
+
 
       /*************/
 
@@ -175,7 +184,7 @@ router.post(
           userId: req.currentUser.id,
           startPrice: price,
           currentPrice: price,
-          // paymentConfirmation: paymentConfirmation,
+          paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
           salesTax,
@@ -199,6 +208,7 @@ router.post(
         slug: listing.slug,
         title,
         price,
+        totalPrice:sum,
         expiresAt,
         version: listing.version,
       });

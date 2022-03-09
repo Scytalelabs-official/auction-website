@@ -1,11 +1,18 @@
+import { Message } from 'node-nats-streaming';
+// import {
+//   Listener,
+//   ListingStatus,
+//   NotFoundError,
+//   PaymentCreatedEvent,
+//   Subjects,
+// } from '@jjmauction/common';
 import {
   Listener,
   ListingStatus,
   NotFoundError,
   PaymentCreatedEvent,
   Subjects,
-} from '@jjmauction/common';
-import { Message } from 'node-nats-streaming';
+} from 'scytalelabs-auction';
 
 import { Listing } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
@@ -31,6 +38,8 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
       status: listing.status,
       currentPrice: listing.currentPrice,
       currentWinnerId: listing.currentWinnerId,
+      totalPrice: listing.totalPrice,
+      quantity: listing.quantity,
       version: listing.version,
     });
 

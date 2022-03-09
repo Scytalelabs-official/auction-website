@@ -1,9 +1,10 @@
+// 
 import {
   Listener,
   ListingCreatedEvent,
   ListingStatus,
   Subjects,
-} from '@jjmauction/common';
+} from 'scytalelabs-auction';
 import { Message } from 'node-nats-streaming';
 
 import { Listing } from '../../models';
@@ -14,7 +15,7 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
   subject: Subjects.ListingCreated = Subjects.ListingCreated;
 
   async onMessage(data: ListingCreatedEvent['data'], msg: Message) {
-    const { id, userId, title, slug, expiresAt, price } = data;
+    const { id, userId, title, slug, expiresAt, price, totalPrice } = data;
 
     await Listing.create({
       id,
@@ -24,7 +25,7 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
       expiresAt,
       startPrice: price,
       currentPrice: price,
-      totalPrice: price,
+      totalPrice: totalPrice,
       status: ListingStatus.Active,
     });
 

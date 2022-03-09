@@ -14,7 +14,7 @@ export interface ListingAttributes {
   /******/
   quantity?: number;
   fixPrice?: number;
-  // paymentConfirmation: Boolean;
+  paymentConfirmation: Boolean;
   massOfItem?: number;
   taxByMassOfItem?: number;
   salesTax?: number;
@@ -59,10 +59,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         defaultValue: null,
       },
       /*************/
-      // paymentConfirmation: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
+      paymentConfirmation: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
 
       massOfItem: {
         type: DataTypes.INTEGER,

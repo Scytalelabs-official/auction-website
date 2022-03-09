@@ -8,6 +8,7 @@ export interface ListingCreatedEvent {
     title: string;
     slug: string;
     price: number;
+    totalPrice: number;
     expiresAt: Date;
     version: number;
   };
