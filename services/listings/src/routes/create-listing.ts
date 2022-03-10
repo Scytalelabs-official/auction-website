@@ -96,6 +96,7 @@ router.post(
         // taxByMassOfItem, //will get this from a table that contains the tax by mass information
         // salesTax,
         // exciseRate,
+        location,
         quantity,
         fixPrice,
         /*********/
@@ -122,7 +123,8 @@ router.post(
       const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
         { resource_type: 'raw' }
       );
-
+      // @ts-ignore
+      const sopName =  req.files.sopDocument[0].filename;
       // @ts-ignore
       console.log('LAB Reports Result : ', req.files.labReports);
       // @ts-ignore
@@ -131,11 +133,23 @@ router.post(
           resource_type: 'raw',
         }
       );
+      // @ts-ignore
+      const reportName =  req.files.labReports[0].filename;
       /*************/
-      const taxByMassOfItem = 3;
-      const salesTax = 5;
-      const exciseRate = 15;
+      let taxByMassOfItem;
+      let salesTax;
+      let exciseRate;
+      if(location === 'North California'){
+        taxByMassOfItem = 3;
+        salesTax = 5;
+        exciseRate = 15;
+      }
 
+      else {
+        taxByMassOfItem = 30;
+        salesTax = 25;
+        exciseRate = 5;
+      }
       let taxAmount;
       if (salesTax <= 0 || salesTax >= 100) {
         // Need consultancy about higher rate
@@ -193,13 +207,18 @@ router.post(
           quantity,
           fixPrice,
           title,
+          location,
           description,
           expiresAt,
           imageId: result.public_id,
           smallImage: result.eager[0].secure_url,
           largeImage: result.eager[1].secure_url,
           sopDocumentId: result1.public_id,
-          labReportId: result2.public_id
+          sopDocumentName: sopName,
+          sopDocumentUrl: result1.secure_url,
+          labReportId: result2.public_id,
+          labReportName: reportName,
+          labReportUrl: result2.secure_url
         },
         { transaction }
       );

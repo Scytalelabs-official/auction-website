@@ -23,12 +23,17 @@ export interface ListingAttributes {
   /******/
   userId?: string;
   title?: string;
+  location: string;
   description?: string;
   imageId: string;
   smallImage: string;
   largeImage: string;
   sopDocumentId: string;
+  sopDocumentName: string;
+  sopDocumentUrl: string;
   labReportId: string;
+  labReportName: string;
+  labReportUrl: string;
   version?: number;
 }
 
@@ -44,7 +49,7 @@ export type ListingStatic = typeof Model & {
 
 const ListingFactory = (sequelize: Sequelize): ListingStatic => {
   const Listing = <ListingStatic>sequelize.define(
-    'listings',
+    'my_listing',
     {
       id: {
         type: DataTypes.UUID,
@@ -116,6 +121,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       imageId: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -132,7 +141,23 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      sopDocumentName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       labReportId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportUrl: {
         type: DataTypes.STRING,
         allowNull: false,
       },
