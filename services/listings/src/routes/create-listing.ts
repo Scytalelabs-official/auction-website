@@ -195,9 +195,11 @@ router.post(
           title,
           description,
           expiresAt,
-          // imageId: result.public_id,
-          // smallImage: result.eager[0].secure_url,
-          // largeImage: result.eager[1].secure_url,
+          imageId: result.public_id,
+          smallImage: result.eager[0].secure_url,
+          largeImage: result.eager[1].secure_url,
+          sopDocumentId: result1.public_id,
+          labReportId: result2.public_id
         },
         { transaction }
       );

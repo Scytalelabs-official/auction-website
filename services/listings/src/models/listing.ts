@@ -24,9 +24,11 @@ export interface ListingAttributes {
   userId?: string;
   title?: string;
   description?: string;
-  // imageId: string;
-  // smallImage: string;
-  // largeImage: string;
+  imageId: string;
+  smallImage: string;
+  largeImage: string;
+  sopDocumentId: string;
+  labReportId: string;
   version?: number;
 }
 
@@ -114,18 +116,26 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      // imageId: {
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
-      // smallImage: {
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
-      // largeImage: {
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      // },
+      imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      smallImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      largeImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       description: {
         type: DataTypes.STRING,
         allowNull: false,
