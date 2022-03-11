@@ -47,7 +47,7 @@ router.post(
       email,
       avatar,
       password: hashedPassword,
-      isRegister: false
+      isRegister: true
     });
 
     const userJwt = jwt.sign(
@@ -56,13 +56,13 @@ router.post(
       },
       process.env.JWT_KEY!
     );
-
+      console.log("User Id : ", user.id);
     await new UserCreatedPublisher(natsWrapper.client).publish({
       id: user.id!,
       name,
       email,
       avatar,
-      isRegister:false,
+      isRegister:true,
       version: user.version!,
     });
 

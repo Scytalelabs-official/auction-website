@@ -50,6 +50,9 @@ router.post(
         );
       }
 
+      console.log("Amount : ", amount);
+      console.log("Total Price : ", listing.totalPrice);
+      
       if (listing.totalPrice >= amount) {
         throw new BadRequestError('Bids must be greater than the current bid');
       }

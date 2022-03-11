@@ -6,27 +6,34 @@ export interface ListingAttributes {
   createdAt?: Date;
   slug?: string;
   id?: string;
-  currentPrice: number;
+  currentPrice?: number;
   status?: ListingStatus;
-  expiresAt: Date;
-  startPrice: number;
+  expiresAt?: Date;
+  startPrice?: number;
   currentWinnerId?: string;
   /******/
-  quantity: number;
-  fixPrice: number;
+  quantity?: number;
+  fixPrice?: number;
   paymentConfirmation: Boolean;
-  massOfItem: number;
-  taxByMassOfItem: number;
-  salesTax: number;
-  exciseRate: number;
-  totalPrice: number;
+  massOfItem?: number;
+  taxByMassOfItem?: number;
+  salesTax?: number;
+  exciseRate?: number;
+  totalPrice?: number;
   /******/
-  userId: string;
-  title: string;
-  description: string;
+  userId?: string;
+  title?: string;
+  location: string;
+  description?: string;
   imageId: string;
   smallImage: string;
   largeImage: string;
+  sopDocumentId: string;
+  sopDocumentName: string;
+  sopDocumentUrl: string;
+  labReportId: string;
+  labReportName: string;
+  labReportUrl: string;
   version?: number;
 }
 
@@ -42,7 +49,7 @@ export type ListingStatic = typeof Model & {
 
 const ListingFactory = (sequelize: Sequelize): ListingStatic => {
   const Listing = <ListingStatic>sequelize.define(
-    'listings',
+    'my_listing',
     {
       id: {
         type: DataTypes.UUID,
@@ -61,12 +68,12 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
       /*************/
       paymentConfirmation: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
       },
 
       massOfItem: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
 
       taxByMassOfItem: {
@@ -114,6 +121,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       imageId: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -123,6 +134,30 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         allowNull: false,
       },
       largeImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportUrl: {
         type: DataTypes.STRING,
         allowNull: false,
       },

@@ -46,7 +46,7 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
     await listing.update({ status: newStatus });
 
     const item = await Inventory.findOne({
-      where: { id: listing.inventoryItemId },
+      where: { id: listing.id },
     });
     if (!item) {
       throw new NotFoundError();
@@ -56,7 +56,7 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
     }
 
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-      id: listing.inventoryItemId,
+      id: item.id,
       status: InventoryStatus.Reserved,
       price: item.price,
       version: item.version,

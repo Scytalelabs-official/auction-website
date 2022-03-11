@@ -1,9 +1,15 @@
+// import {
+//   Listener,
+//   ListingUpdatedEvent,
+//   NotFoundError,
+//   Subjects,
+// } from '@jjmauction/common';
 import {
   Listener,
   ListingUpdatedEvent,
   NotFoundError,
   Subjects,
-} from '@jjmauction/common';
+} from 'scytalelabs-auction';
 import { Message } from 'node-nats-streaming';
 
 import { Listing } from '../../models';
@@ -14,7 +20,7 @@ export class ListingUpdatedListener extends Listener<ListingUpdatedEvent> {
   subject: Subjects.ListingUpdated = Subjects.ListingUpdated;
 
   async onMessage(data: ListingUpdatedEvent['data'], msg: Message) {
-    const { id, status, currentPrice, version } = data;
+    const { id, status, currentPrice,totalPrice, version } = data;
 
     const listing = await Listing.findOne({
       where: { id, version: version - 1 },
@@ -24,7 +30,7 @@ export class ListingUpdatedListener extends Listener<ListingUpdatedEvent> {
       throw new NotFoundError();
     }
 
-    await listing.update({ status, currentPrice });
+    await listing.update({ status, currentPrice, totalPrice });
 
     msg.ack();
   }

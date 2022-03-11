@@ -1,9 +1,15 @@
+// import {
+//   BadRequestError,
+//   NotFoundError,
+//   requireAuth,
+//   validateRequest,
+// } from '@jjmauction/common';
 import {
   BadRequestError,
   NotFoundError,
   requireAuth,
   validateRequest,
-} from '@jjmauction/common';
+} from 'scytalelabs-auction';
 import cloudinary from 'cloudinary';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
@@ -36,20 +42,25 @@ const storage = multer.diskStorage({
 //   },
 // });
 // local_cloudinary.config({
-//         cloud_name: 'scytalelabs',
-//         api_key: '432183885194623',
-//         api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
-//         secure: true
-//     });
-const upload = multer({ storage: storage }).any('uploadFiles', 3);
+//   cloud_name: 'scytalelabs',
+//   api_key: '432183885194623',
+//   api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//   secure: true,
+// });
+const upload = multer({ storage: storage });
 // const sop = multer({ storage: sop_storage });
 // const reports = multer({ storage: reports_storage });
 
 router.post(
   '/api/listings',
-  upload.single('image'),
-  upload.single('sopDocument'),
-  upload.single('labReports'),
+  // upload.single('image'),
+  upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'sopDocument', maxCount: 1 },
+    { name: 'labReports', maxCount: 1 },
+  ]),
+  // upload.single('sopDocument'),
+  // upload.single('labReports'),
   requireAuth,
   [
     body('price')
@@ -85,24 +96,60 @@ router.post(
         // taxByMassOfItem, //will get this from a table that contains the tax by mass information
         // salesTax,
         // exciseRate,
+        location,
         quantity,
         fixPrice,
         /*********/
       } = req.body;
+     
+      // @ts-ignore
+      console.log('FILESSSSS Result : ', req.files);
+      // @ts-ignore
+      console.log('FILESSSSS Image Result : ', req.files.image);
+      // @ts-ignore
+      console.log('FILESSSSS Image Path Result : ', req.files.image[0].path);
 
       // @ts-ignore
-      const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        eager: [
-          { width: 225, height: 225 },
-          { width: 1280, height: 1280 },
-        ],
-      });
+      const result = await cloudinary.v2.uploader.upload(req.files.image[0].path,
+        {
+          eager: [
+            { width: 225, height: 225 },
+            { width: 1280, height: 1280 },
+          ],
+        }
+      );
 
+      // @ts-ignore
+      const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
+        { resource_type: 'raw' }
+      );
+      // @ts-ignore
+      const sopName =  req.files.sopDocument[0].filename;
+      // @ts-ignore
+      console.log('LAB Reports Result : ', req.files.labReports);
+      // @ts-ignore
+      const result2 = await cloudinary.v2.uploader.upload(req.files.labReports[0].path,
+        {
+          resource_type: 'raw',
+        }
+      );
+      // @ts-ignore
+      const reportName =  req.files.labReports[0].filename;
       /*************/
-      const taxByMassOfItem = 3;
-      const salesTax = 5;
-      const exciseRate = 15;
+      let taxByMassOfItem;
+      let salesTax;
+      let exciseRate;
+      if(location === 'North California'){
+        taxByMassOfItem = 3;
+        salesTax = 5;
+        exciseRate = 15;
+      }
 
+      else {
+        taxByMassOfItem = 30;
+        salesTax = 25;
+        exciseRate = 5;
+      }
       let taxAmount;
       if (salesTax <= 0 || salesTax >= 100) {
         // Need consultancy about higher rate
@@ -138,6 +185,11 @@ router.post(
       console.log('taxAmount', taxAmount);
       console.log('massprice', massprice);
       console.log('sum', sum);
+      console.log('Payment Confirmation : ', paymentConfirmation);
+      console.log('Mas of Item : ', massOfItem);
+       console.log('Tax by Mass of Item : ', taxByMassOfItem);
+      console.log('Fix Price : ', fixPrice);
+
 
       /*************/
 
@@ -146,7 +198,6 @@ router.post(
           userId: req.currentUser.id,
           startPrice: price,
           currentPrice: price,
-          /******/
           paymentConfirmation,
           massOfItem,
           taxByMassOfItem,
@@ -155,13 +206,19 @@ router.post(
           totalPrice: sum, //https://www.investopedia.com/terms/e/excisetax.asp
           quantity,
           fixPrice,
-          /******/
           title,
+          location,
           description,
           expiresAt,
           imageId: result.public_id,
           smallImage: result.eager[0].secure_url,
           largeImage: result.eager[1].secure_url,
+          sopDocumentId: result1.public_id,
+          sopDocumentName: sopName,
+          sopDocumentUrl: result1.secure_url,
+          labReportId: result2.public_id,
+          labReportName: reportName,
+          labReportUrl: result2.secure_url
         },
         { transaction }
       );
@@ -172,6 +229,7 @@ router.post(
         slug: listing.slug,
         title,
         price,
+        totalPrice:sum,
         expiresAt,
         version: listing.version,
       });

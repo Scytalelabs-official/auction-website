@@ -81,6 +81,7 @@ const StyledErrorMessage = styled.div(xw`
 
 const Listing = ({ listingData }) => {
   const [listing, setListing] = useState(listingData);
+  const [quantity, setQuantity] = useState(0);
   const [isBidding, setIsBidding] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
 
@@ -141,13 +142,13 @@ const Listing = ({ listingData }) => {
   const onBuy = async (body) => {
     setIsBuying(true);
     console.log("currentUser", currentUser);
-    console.log("body", body);
+    console.log("quantity", quantity);
     console.log('listing', listing);
 
     try {
       await axios.post(`/api/listings/buy/${listing.id}`, {
         amount: listing.fixPrice,
-        quantity: body.quantity,
+        quantity: quantity,
         user: listing.user
       });
       toast.success('Sucessfully Bought Item!');
@@ -210,7 +211,7 @@ const Listing = ({ listingData }) => {
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableRowName>Initial Price</StyledTableRowName>
+                <StyledTableRowName>Current Price</StyledTableRowName>
                 <StyledTableRowValue>
                   {centsToDollars(listing.currentPrice)}
                 </StyledTableRowValue>
@@ -234,21 +235,25 @@ const Listing = ({ listingData }) => {
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableRowName>Tax by Mass of Item</StyledTableRowName>
+                <StyledTableRowName>Location</StyledTableRowName>
                 <StyledTableRowValue>
-                  {convertToDollars(listing.taxByMassOfItem)}
+                  {listing.location}
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableRowName>Excise Rate</StyledTableRowName>
+                <StyledTableRowName>Sop Document</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.exciseRate}%
+                  <a href={listing.sopDocumentUrl} target="_blank" download style={{ float: 'right' }}>
+                    <img src="/images/download.svg"></img>
+                  </a>
                 </StyledTableRowValue>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableRowName>Sales Tax</StyledTableRowName>
+                <StyledTableRowName>Lab Reports</StyledTableRowName>
                 <StyledTableRowValue>
-                  {listing.salesTax}%
+                  <a href={listing.labReportUrl} target="_blank" download style={{ float: 'right' }}>
+                    <img src="/images/download.svg"></img>
+                  </a>
                 </StyledTableRowValue>
               </StyledTableRow>
 
@@ -296,30 +301,32 @@ const Listing = ({ listingData }) => {
                 </button>
               </div>
               <ErrorMessage component={StyledErrorMessage} name="amount" />
-              <div style={{ justifyContent: 'center' }} className="flex items-center pointer-events-none">
+              {/* <div style={{ justifyContent: 'center' }} className="flex items-center pointer-events-none">
                 <span className="text-gray-500 sm:text-sm">or</span>
-              </div>
+              </div> */}
 
-              <div className="mt-1 flex rounded-md shadow-sm">
+              {/* <div className="mt-1 flex rounded-md shadow-sm">
                 <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                  {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">$</span>
-                  </div> */}
                   <Field
                     type="text"
                     name="quantity"
+                    onChange={(e) => {
+                      console.log("e", e);
+
+                      setQuantity(e.target.value)
+                    }}
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-7 sm:text-sm border-gray-300"
                     placeholder="Quantity to buy"
                   />
                 </div>
                 <button
-                  // type="submit"
-                  onClick={() => onBuy}
+                  type="button"
+                  onClick={onBuy}
                   className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  {isBidding ? 'Buying...' : 'Buy now!'}
+                  {isBuying ? 'Buying...' : 'Buy now!'}
                 </button>
-              </div>
+              </div> */}
               <ErrorMessage component={StyledErrorMessage} name="quantity" />
             </Form>
           </Formik>

@@ -29,7 +29,11 @@ export class BidCreatedListener extends Listener<BidCreatedEvent> {
     }
 
     // Check we are not processing events out of order
-    if (amount < listing.currentPrice) {
+    // if (amount < listing.currentPrice) {
+    //   return msg.ack();
+    // }
+
+    if (amount < listing.totalPrice) {
       return msg.ack();
     }
 
@@ -44,6 +48,8 @@ export class BidCreatedListener extends Listener<BidCreatedEvent> {
       status: listing.status,
       currentPrice: listing.totalPrice,
       currentWinnerId: listing.currentWinnerId,
+      totalPrice: listing.totalPrice,
+      quantity: listing.quantity,
       version: listing.version,
     });
 

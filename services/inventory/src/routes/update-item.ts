@@ -1,9 +1,15 @@
+// import {
+//   BadRequestError,
+//   NotFoundError,
+//   requireAuth,
+//   validateRequest,
+// } from '@jjmauction/common';
 import {
   BadRequestError,
   NotFoundError,
   requireAuth,
   validateRequest,
-} from '@jjmauction/common';
+} from 'scytalelabs-auction';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
@@ -59,17 +65,17 @@ router.post(
         { transaction }
       );
 
-      // new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-      //   id: item.id!,
-      //   // userId: req.currentUser!.id,
-      //   // slug: item.slug!,
-      //   title,
-      //   price,
-      //   massOfItem,
-      //   description,
-      //   createdAt: new Date(Date.now()),
-      //   version: item.version!,
-      // });
+      new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
+        id: item.id!,
+        // userId: req.currentUser!.id,
+        // slug: item.slug!,
+        title,
+        price,
+        massOfItem,
+        description,
+        createdAt: new Date(Date.now()),
+        version: item.version!,
+      });
 
       res.status(201).send(item);
     });

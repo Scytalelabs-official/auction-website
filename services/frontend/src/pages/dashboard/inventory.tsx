@@ -15,6 +15,8 @@ const Inventory = ({ listingsData }) => {
     const {
         auth: { isAuthenticated },
     } = useContext(AppContext);
+    console.log("listingsData", listingsData);
+
     const [listings, setListings] = useState(listingsData);
     const [listing, setListing] = useState([]);
 
@@ -78,17 +80,47 @@ const Inventory = ({ listingsData }) => {
                                                 Created
                                             </th>
                                             <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Current Price
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Start Price
-                                            </th>
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Current Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Fixed Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Start Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Quantity
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Location
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Lab Reports
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        SOP Documents
+                      </th>
                                             <th
                                                 scope="col"
                                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -125,7 +157,7 @@ const Inventory = ({ listingsData }) => {
                     </div>
                 </div>
             </section>
-            <InventoryModal open={open} setOpen={setOpen} listing={listing}/>
+            <InventoryModal open={open} setOpen={setOpen} listing={listing} />
         </>
     );
 };

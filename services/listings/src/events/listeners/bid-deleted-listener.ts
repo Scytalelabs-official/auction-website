@@ -1,10 +1,16 @@
+import { Message } from 'node-nats-streaming';
+// import {
+//   BidDeletedEvent,
+//   Listener,
+//   NotFoundError,
+//   Subjects,
+// } from '@jjmauction/common';
 import {
   BidDeletedEvent,
   Listener,
   NotFoundError,
   Subjects,
-} from '@jjmauction/common';
-import { Message } from 'node-nats-streaming';
+} from 'scytalelabs-auction';
 
 import { Listing, User } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
@@ -36,6 +42,8 @@ export class BidDeletedListener extends Listener<BidDeletedEvent> {
       status: listing.status,
       currentPrice: listing.currentPrice,
       currentWinnerId: listing.currentWinnerId,
+      totalPrice: listing.totalPrice,
+      quantity: listing.quantity,
     });
 
     await socketIOWrapper.io
