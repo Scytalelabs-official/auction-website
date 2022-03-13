@@ -6,6 +6,7 @@ import { UserCreatedListener } from './events/listeners/user-created-listener';
 import { db } from './models';
 import { natsWrapper } from './nats-wrapper';
 import { socketIOWrapper } from './socket-io-wrapper';
+import cloudinary from 'cloudinary';
 
 (async () => {
   try {
@@ -30,6 +31,24 @@ import { socketIOWrapper } from './socket-io-wrapper';
     if (!process.env.NATS_CLUSTER_ID) {
       throw new Error('NATS_CLUSTER_ID must be defined');
     }
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      throw new Error('NATS_CLUSTER_ID must be defined');
+    }
+
+    if (!process.env.CLOUDINARY_API_KEY) {
+      throw new Error('NATS_CLUSTER_ID must be defined');
+    }
+
+    if (!process.env.CLOUDINARY_API_SECRET) {
+      throw new Error('NATS_CLUSTER_ID must be defined');
+    }
+
+    await cloudinary.v2.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME /*'scytalelabs'*/,
+      api_key: process.env.CLOUDINARY_API_KEY /*'432183885194623'*/,
+      api_secret: process.env.CLOUDINARY_API_SECRET /*'mZAxNn0YNm7YxPOMAvrBP0UIUfU'*/,
+    });
 
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,

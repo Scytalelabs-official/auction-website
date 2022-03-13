@@ -6,16 +6,27 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 export interface InventoryAttributes {
   id?: string;
-  listingId: string;
-  soldOut: number;
+  // listingId: string;
+  // soldOut: number;
   userId: string;
   // slug?: string;
   title: string;
   status?: InventoryStatus;
   price: number;
+  totalPrice:number;
   massOfItem: number;
   quantity: number;
+  paymentConfirmation: Boolean;
   description: string;
+  imageId: string;
+  smallImage: string;
+  largeImage: string;
+  sopDocumentId: string;
+  sopDocumentName: string;
+  sopDocumentUrl: string;
+  labReportId: string;
+  labReportName: string;
+  labReportUrl: string;
   createdAt?: Date;
   version?: number;
 }
@@ -44,14 +55,14 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      listingId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
-      soldOut: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+      // listingId: {
+      //   type: DataTypes.UUID,
+      //   allowNull: false,
+      // },
+      // soldOut: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      // },
       // slug: {
       //   type: DataTypes.STRING,
       //   unique: true,
@@ -69,6 +80,10 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      totalPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       massOfItem: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -77,10 +92,51 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      paymentConfirmation: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       description: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      smallImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      largeImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

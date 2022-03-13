@@ -73,8 +73,7 @@ import { socketIOWrapper } from './socket-io-wrapper';
     await cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME /*'scytalelabs'*/,
       api_key: process.env.CLOUDINARY_API_KEY /*'432183885194623'*/,
-      api_secret:
-        process.env.CLOUDINARY_API_SECRET /*'mZAxNn0YNm7YxPOMAvrBP0UIUfU'*/,
+      api_secret: process.env.CLOUDINARY_API_SECRET /*'mZAxNn0YNm7YxPOMAvrBP0UIUfU'*/,
     });
     // local_cloudinary.config({
     //     cloud_name: 'scytalelabs>',

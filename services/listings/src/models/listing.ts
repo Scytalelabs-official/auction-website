@@ -6,6 +6,7 @@ export interface ListingAttributes {
   createdAt?: Date;
   slug?: string;
   id?: string;
+  inventoryItemId:number;
   currentPrice?: number;
   status?: ListingStatus;
   expiresAt?: Date;
@@ -57,6 +58,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         unique: true,
         primaryKey: true,
       },
+      inventoryItemId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       userId: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -90,7 +95,6 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-
       totalPrice: {
         type: DataTypes.INTEGER,
         allowNull: false,
