@@ -1,4 +1,11 @@
 import cloudinary from 'cloudinary';
+// var local_cloudinary = require('cloudinary').v2;
+// local_cloudinary.config({
+//   cloud_name: 'scytalelabs',
+//   api_key: '432183885194623',
+//   api_secret: 'mZAxNn0YNm7YxPOMAvrBP0UIUfU',
+//   secure: true,
+// });
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -75,7 +82,7 @@ router.post(
       // }
 
       // @ts-ignore
-      const result = await cloudinary.v2.uploader.upload(req.files.image[0].path,
+      const result = await cloudinary.uploader.upload(req.files.image[0].path,
         {
           eager: [
             { width: 225, height: 225 },
@@ -85,7 +92,7 @@ router.post(
       );
 
       // @ts-ignore
-      const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
+      const result1 = await cloudinary.uploader.upload(req.files.sopDocument[0].path,
         { resource_type: 'raw' }
       );
       // @ts-ignore
@@ -93,7 +100,7 @@ router.post(
       // @ts-ignore
       console.log('LAB Reports Result : ', req.files.labReports);
       // @ts-ignore
-      const result2 = await cloudinary.v2.uploader.upload(req.files.labReports[0].path,
+      const result2 = await cloudinary.uploader.upload(req.files.labReports[0].path,
         {
           resource_type: 'raw',
         }
