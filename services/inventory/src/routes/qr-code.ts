@@ -26,4 +26,4 @@ router.get('/api/inventory/:itemId', async (req: Request, res: Response) => {
   res.status(200).send(item);
 });
 
-export { router as getItemRouter };
+export { router as qrCodeRouter };

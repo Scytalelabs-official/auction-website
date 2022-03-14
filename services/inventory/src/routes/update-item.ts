@@ -6,6 +6,7 @@
 // } from '@jjmauction/common';
 import {
   BadRequestError,
+  InventoryStatus,
   NotFoundError,
   requireAuth,
   validateRequest,
@@ -69,11 +70,12 @@ router.post(
         id: item.id!,
         // userId: req.currentUser!.id,
         // slug: item.slug!,
-        title,
+        // title,
+        status : InventoryStatus.Available,
         price,
-        massOfItem,
-        description,
-        createdAt: new Date(Date.now()),
+        // massOfItem,
+        // description,
+        // createdAt: new Date(Date.now()),
         version: item.version!,
       });
 
