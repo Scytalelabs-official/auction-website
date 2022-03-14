@@ -12,7 +12,8 @@ import { deleteItemRouter } from './routes/delete-item';
 import { getItemRouter } from './routes/get-item';
 import { getItemsRouter } from './routes/get-items';
 import { updateItemRouter } from './routes/update-item';
-import { qrCodeRouter } from './routes/qr-code'
+import { qrCodeRouter } from './routes/qr-code';
+import { getUserItemsRouter } from './routes/get-users-items';
 const app = express();
 
 app.set('trust proxy', true);
@@ -26,6 +27,7 @@ app.use(getItemRouter);
 app.use(getItemsRouter);
 app.use(updateItemRouter);
 app.use(qrCodeRouter);
+app.use(getUserItemsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

@@ -18,4 +18,4 @@ router.get(
   }
 );
 
-export { router as getUserListingsRouter };
+export { router as getUserItemsRouter };
