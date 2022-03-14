@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize';
 
+import { DirectBuyFactory } from './direct_buy';
 import { InventoryFactory } from './inventory';
 import { ListingFactory } from './listing';
 import { UserFactory } from './user';
-import { DirectBuyFactory } from './direct_buy';
 
 const db =
   process.env.NODE_ENV == 'test'
@@ -18,9 +18,8 @@ const User = UserFactory(db);
 const Inventory = InventoryFactory(db);
 const DirectBuy = DirectBuyFactory(db);
 
-
 User.hasMany(Listing);
 Listing.belongsTo(User);
-DirectBuy.belongsTo(Listing)
-// Listing.belongsTo(Inventory);
+DirectBuy.belongsTo(Listing);
+Listing.belongsTo(Inventory);
 export { db, Listing, User, Inventory, DirectBuy };

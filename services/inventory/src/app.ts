@@ -1,6 +1,8 @@
 import 'express-async-errors';
 
-import { NotFoundError, currentUser, errorHandler } from '@jjmauction/common';
+// import { NotFoundError, currentUser, errorHandler } from '@jjmauction/common';
+import { NotFoundError, currentUser, errorHandler } from 'scytalelabs-auction';
+
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
@@ -9,7 +11,8 @@ import { addItemRouter } from './routes/add-item';
 import { deleteItemRouter } from './routes/delete-item';
 import { getItemRouter } from './routes/get-item';
 import { getItemsRouter } from './routes/get-items';
-
+import { updateItemRouter } from './routes/update-item';
+import { qrCodeRouter } from './routes/qr-code'
 const app = express();
 
 app.set('trust proxy', true);
@@ -21,6 +24,8 @@ app.use(addItemRouter);
 app.use(deleteItemRouter);
 app.use(getItemRouter);
 app.use(getItemsRouter);
+app.use(updateItemRouter);
+app.use(qrCodeRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

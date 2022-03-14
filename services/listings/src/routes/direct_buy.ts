@@ -72,4 +72,4 @@ router.post(
   }
 );
 
-export { router as createListingRouter };
+export { router as directBuyRouter };

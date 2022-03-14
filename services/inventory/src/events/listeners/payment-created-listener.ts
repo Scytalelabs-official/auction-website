@@ -39,7 +39,7 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
     }
 
     const item = await Inventory.findOne({
-      where: { id: listing.id },
+      where: { id: listing.inventoryItemId },
     });
     if (!item) {
       throw new NotFoundError();

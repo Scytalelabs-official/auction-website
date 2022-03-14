@@ -53,6 +53,20 @@ spec:
                 name: listings-srv
                 port:
                   number: 3000
+          - path: /api/inventory/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: inventory-srv
+                port:
+                  number: 3000
+          - path: /socket.io/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: inventory-srv
+                port:
+                  number: 3000
           - path: /?(.*)
             pathType: Prefix
             backend:

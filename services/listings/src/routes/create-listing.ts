@@ -1,3 +1,7 @@
+import cloudinary from 'cloudinary';
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import multer from 'multer';
 // import {
 //   BadRequestError,
 //   NotFoundError,
@@ -10,10 +14,6 @@ import {
   requireAuth,
   validateRequest,
 } from 'scytalelabs-auction';
-import cloudinary from 'cloudinary';
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
-import multer from 'multer';
 
 import { ListingCreatedPublisher } from '../events/publishers/listing-created-publisher';
 import { Inventory, Listing, db } from '../models';
@@ -99,9 +99,17 @@ router.post(
         location,
         quantity,
         fixPrice,
+        inventoryItemId,
         /*********/
       } = req.body;
-     
+
+      const item = await Inventory.findOne({
+        where: { id: inventoryItemId },
+      });
+
+      if (!item) {
+        throw new NotFoundError();
+      }
       // @ts-ignore
       console.log('FILESSSSS Result : ', req.files);
       // @ts-ignore
@@ -124,7 +132,7 @@ router.post(
         { resource_type: 'raw' }
       );
       // @ts-ignore
-      const sopName =  req.files.sopDocument[0].filename;
+      const sopName = req.files.sopDocument[0].filename;
       // @ts-ignore
       console.log('LAB Reports Result : ', req.files.labReports);
       // @ts-ignore
@@ -134,18 +142,16 @@ router.post(
         }
       );
       // @ts-ignore
-      const reportName =  req.files.labReports[0].filename;
+      const reportName = req.files.labReports[0].filename;
       /*************/
       let taxByMassOfItem;
       let salesTax;
       let exciseRate;
-      if(location === 'North California'){
+      if (location === 'North California') {
         taxByMassOfItem = 3;
         salesTax = 5;
         exciseRate = 15;
-      }
-
-      else {
+      } else {
         taxByMassOfItem = 30;
         salesTax = 25;
         exciseRate = 5;
@@ -187,15 +193,15 @@ router.post(
       console.log('sum', sum);
       console.log('Payment Confirmation : ', paymentConfirmation);
       console.log('Mas of Item : ', massOfItem);
-       console.log('Tax by Mass of Item : ', taxByMassOfItem);
+      console.log('Tax by Mass of Item : ', taxByMassOfItem);
       console.log('Fix Price : ', fixPrice);
-
 
       /*************/
 
       const listing = await Listing.create(
         {
           userId: req.currentUser.id,
+          inventoryItemId,
           startPrice: price,
           currentPrice: price,
           paymentConfirmation,
@@ -218,7 +224,7 @@ router.post(
           sopDocumentUrl: result1.secure_url,
           labReportId: result2.public_id,
           labReportName: reportName,
-          labReportUrl: result2.secure_url
+          labReportUrl: result2.secure_url,
         },
         { transaction }
       );
@@ -226,10 +232,11 @@ router.post(
       new ListingCreatedPublisher(natsWrapper.client).publish({
         id: listing.id,
         userId: req.currentUser.id,
+        inventoryItemId,
         slug: listing.slug,
         title,
         price,
-        totalPrice:sum,
+        totalPrice: sum,
         expiresAt,
         version: listing.version,
       });

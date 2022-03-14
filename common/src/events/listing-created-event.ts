@@ -6,6 +6,7 @@ export interface ListingCreatedEvent {
     id: string;
     userId: string;
     title: string;
+    inventoryItemId: string;
     slug: string;
     price: number;
     totalPrice: number;

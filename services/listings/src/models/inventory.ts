@@ -7,10 +7,13 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 export interface InventoryAttributes {
   id?: string;
   userId: string;
-  slug?: string;
   title: string;
   status?: InventoryStatus;
-  price: number;
+  totalPrice: number;
+  fixPrice: number;
+  quantity: number;
+  massOfItem: number;
+  description: string;
   createdAt?: Date;
   version?: number;
 }
@@ -39,10 +42,6 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      slug: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
       title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -52,7 +51,15 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         defaultValue: InventoryStatus.Available,
         values: Object.values(InventoryStatus),
       },
-      price: {
+      totalPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      fixPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

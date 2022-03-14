@@ -12,6 +12,7 @@ import { Message } from 'node-nats-streaming';
 // import { InventoryStatus } from '../../../../../common/src/events/types/inventory-status';
 // import { ListingStatus } from '../../../../../common/src/events/types/listing-status';
 import {
+  InventoryItemCreatedEvent,
   InventoryStatus,
   Listener,
   ListingCreatedEvent,
@@ -19,50 +20,51 @@ import {
   Subjects,
 } from 'scytalelabs-auction';
 
-import { Listing } from '../../models';
+// import { Listing } from '../../models';
 import { Inventory } from '../../models';
 import { natsWrapper } from '../../nats-wrapper';
 import { socketIOWrapper } from '../../socket-io-wrapper';
-import { InventoryItemUpdatedPublisher } from '../publishers/inventory-item-updated-publisher';
 import { queueGroupName } from './queue-group-name';
 
-export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
+export class InventoryItemCreatedListener extends Listener<InventoryItemCreatedEvent> {
   queueGroupName = queueGroupName;
-  subject: Subjects.ListingCreated = Subjects.ListingCreated;
+  subject: Subjects.InventoryItemCreated = Subjects.InventoryItemCreated;
 
-  async onMessage(data: ListingCreatedEvent['data'], msg: Message) {
-    const { id, userId, inventoryItemId, title, slug, expiresAt, price } = data;
-
-    const item = await Inventory.findOne({
-      where: { id: inventoryItemId },
-    });
-    if (!item) {
-      throw new NotFoundError();
-    }
-
-    const listing = await Listing.create({
+  async onMessage(data: InventoryItemCreatedEvent['data'], msg: Message) {
+    const {
       id,
-      title,
-      slug,
       userId,
-      inventoryItemId,
-      expiresAt,
-      startPrice: price,
-      currentPrice: price,
-      status: ListingStatus.Active,
+      title,
+      fixPrice,
+      totalPrice,
+      quantity,
+      massOfItem,
+      description,
+    } = data;
+
+    const inventory = await Inventory.create({
+      id,
+      userId,
+      title,
+      fixPrice,
+      totalPrice,
+      quantity,
+      massOfItem,
+      description,
+      status: InventoryStatus.Available,
     });
 
-    new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-      id: inventoryItemId,
-      status: InventoryStatus.Listed,
-      price: listing.currentPrice,
-      version: listing.version,
-    });
+    // new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
+    //   id: listing.id,
+    //   status: InventoryStatus.Listed,
+    //   price: listing.currentPrice,
+    //   version: listing.version,
+    // });
 
     await socketIOWrapper.io
       .of('/socket')
-      .to(listing.id)
-      .emit('listing', listing);
+      .to(inventory.id)
+      .emit('inventory', inventory);
 
     msg.ack();
   }
