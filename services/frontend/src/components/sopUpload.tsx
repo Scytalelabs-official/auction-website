@@ -40,7 +40,6 @@ const SOPUpload = (props) => {
     isDragReject,
     acceptedFiles,
   } = useDropzone({
-    // accept: 'image/*',
     onDrop: (acceptedFiles) => {
       setFieldValue('sopDocument', acceptedFiles[0]);
     },

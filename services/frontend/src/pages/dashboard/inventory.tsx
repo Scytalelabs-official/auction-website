@@ -8,22 +8,26 @@ import DashboardBreadcrumbs from '../../components/DashboardBreadcrumbs';
 import DashboardTabs from '../../components/DashboardTabs';
 import Error from '../../components/ErrorMessage';
 import InventoryModal from '../../components/inventoryModal';
-import ListingDashboardTableRow from '../../components/ListingDashboardTableRow';
+import InventoryDashboardTableRow from '../../components/InventoryDashboardTableRow';
 import AppContext from '../../context/app-context';
 
-const Inventory = ({ listingsData }) => {
+const Inventory = ({ inventoryData }) => {
     const {
         auth: { isAuthenticated },
     } = useContext(AppContext);
-    const [listings, setListings] = useState(listingsData);
-    const [open, setOpen] = useState(false)
-    console.log('listings', listings);
+    console.log("inventoryData", inventoryData);
 
-    const onDelete = async (listingId) => {
+    const [inventories, setInventories] = useState(inventoryData);
+    const [inventory, setInventory] = useState([]);
+
+    const [open, setOpen] = useState(false)
+    console.log('inventories', inventories);
+
+    const onDelete = async (inventoryId) => {
         try {
-            await axios.delete(`/api/listings/${listingId}`);
-            setListings(listings.filter((listing) => listing.id !== listingId));
-            toast.success('Sucessfully deleted listing!');
+            await axios.delete(`/api/inventories/${inventoryId}`);
+            setInventories(inventories.filter((inventory) => inventory.id !== inventoryId));
+            toast.success('Sucessfully deleted inventory!');
         } catch (err) {
             err.response.data.errors.forEach((err) => toast.error(err.message));
         }
@@ -79,13 +83,31 @@ const Inventory = ({ listingsData }) => {
                                                 scope="col"
                                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                             >
-                                                Current Price
+                                                Fixed Price
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                             >
-                                                Start Price
+                                                Quantity
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                Location
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                Lab Reports
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                SOP Documents
                                             </th>
                                             <th
                                                 scope="col"
@@ -99,18 +121,19 @@ const Inventory = ({ listingsData }) => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {listings.map((listing, index) => (
+                                        {inventories.map((inventory, index) => (
                                             // <div key={index}>
-                                            <ListingDashboardTableRow
+                                            <InventoryDashboardTableRow
                                                 index={index}
-                                                listing={listing}
-                                                onDelete={() => onDelete(listing.id)}
+                                                inventory={inventory}
+                                                onDelete={() => onDelete(inventory.id)}
                                                 tab="inventory"
                                                 setOpen={setOpen}
+                                                setInventory={setInventory}
                                             />
                                             // </div>
                                         ))}
-                                        {!listings.length && (
+                                        {!inventories.length && (
                                             <p className="m-4 max-w-2xl text-l">
                                                 You have created nothing in Inventory yet.
                                             </p>
@@ -122,7 +145,7 @@ const Inventory = ({ listingsData }) => {
                     </div>
                 </div>
             </section>
-            <InventoryModal open={open} setOpen={setOpen} />
+            <InventoryModal open={open} setOpen={setOpen} listing={inventory} />
         </>
     );
 };
@@ -130,10 +153,10 @@ const Inventory = ({ listingsData }) => {
 Inventory.getInitialProps = async (context: NextPageContext, client: any) => {
     try {
         const { data } = await client.get(`/api/listings/me`);
-        return { listingsData: data };
+        return { inventoryData: data };
     } catch (err) {
         console.error(err);
-        return { listingsData: [] };
+        return { inventoryData: [] };
     }
 };
 

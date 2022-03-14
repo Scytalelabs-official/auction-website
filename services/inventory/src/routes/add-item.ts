@@ -73,6 +73,10 @@ router.post(
         location,
       } = req.body;
 
+      console.log('req.body : ', req.body);
+      // @ts-ignore
+      console.log('req.files : ', req.files);
+
       // const listing = await Listing.findOne({
       //   where: { id: listingId },
       // });
@@ -82,7 +86,7 @@ router.post(
       // }
 
       // @ts-ignore
-      const result = await cloudinary.uploader.upload(req.files.image[0].path,
+      const result = await cloudinary.v2.uploader.upload(req.files.image[0].path,
         {
           eager: [
             { width: 225, height: 225 },
@@ -90,9 +94,10 @@ router.post(
           ],
         }
       );
+      console.log("result", result);
 
       // @ts-ignore
-      const result1 = await cloudinary.uploader.upload(req.files.sopDocument[0].path,
+      const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
         { resource_type: 'raw' }
       );
       // @ts-ignore
@@ -100,7 +105,7 @@ router.post(
       // @ts-ignore
       console.log('LAB Reports Result : ', req.files.labReports);
       // @ts-ignore
-      const result2 = await cloudinary.uploader.upload(req.files.labReports[0].path,
+      const result2 = await cloudinary.v2.uploader.upload(req.files.labReports[0].path,
         {
           resource_type: 'raw',
         }

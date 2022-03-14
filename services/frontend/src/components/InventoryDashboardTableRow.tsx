@@ -3,21 +3,21 @@ import Link from 'next/link';
 import { centsToDollars } from '../utils/cents-to-dollars';
 import Countdown from './Countdown';
 
-const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen, setListing }) => {
+const InventoryDashboardTableRow = ({ index, inventory, onDelete, tab, setOpen, setInventory }) => {
   return (
     <tr key={index}>
       <td className="px-6 py-4 whitespace-nowrap">
-        <Link href={`/listings/${listing.slug}`}>
+        <Link href={`/listings/${inventory.slug}`}>
           <a className="hover:underline text-sm text-gray-900">
-            {listing.title}
+            {inventory.title}
           </a>
         </Link>
-        <div className="text-sm text-gray-500">
-          Time Left: <Countdown expiresAt={listing.expiresAt} />
-        </div>
+        {/* <div className="text-sm text-gray-500">
+          Time Left: <Countdown expiresAt={inventory.expiresAt} />
+        </div> */}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {new Date(listing.createdAt).toLocaleDateString('en-US', {
+        {new Date(inventory.createdAt).toLocaleDateString('en-US', {
           hour: '2-digit',
           minute: '2-digit',
           weekday: 'long',
@@ -26,34 +26,34 @@ const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen, setL
           day: 'numeric',
         })}
       </td>
+      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {centsToDollars(inventory.currentPrice)}
+      </td> */}
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {centsToDollars(listing.currentPrice)}
+        {centsToDollars(inventory.fixPrice)}
+      </td>
+      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {centsToDollars(inventory.startPrice)}
+      </td> */}
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {inventory.quantity}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {centsToDollars(listing.fixPrice)}
+        {inventory.location}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {centsToDollars(listing.startPrice)}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {listing.quantity}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {listing.location}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        <a href={listing.labReportUrl} target="_blank" download >
+        <a href={inventory.labReportUrl} target="_blank" download >
           <img src="/images/download.svg"></img>
         </a>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        <a href={listing.sopDocumentUrl} target="_blank" download >
+        <a href={inventory.sopDocumentUrl} target="_blank" download >
           <img src="/images/download.svg"></img>
         </a>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-          {listing.status}
+          {inventory.status}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -69,7 +69,7 @@ const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen, setL
           <button
             onClick={() => {
               console.log("SETOPEN");
-              setListing(listing)
+              setInventory(inventory)
               setOpen(true)
             }}
             className="text-indigo-600 hover:text-indigo-900"
@@ -83,4 +83,4 @@ const ListingDashboardTableRow = ({ index, listing, onDelete, tab, setOpen, setL
   );
 };
 
-export default ListingDashboardTableRow;
+export default InventoryDashboardTableRow;
