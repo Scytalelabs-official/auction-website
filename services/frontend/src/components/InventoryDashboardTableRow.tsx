@@ -30,7 +30,7 @@ const InventoryDashboardTableRow = ({ index, inventory, onDelete, tab, setOpen, 
         {centsToDollars(inventory.currentPrice)}
       </td> */}
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {centsToDollars(inventory.fixPrice)}
+        {centsToDollars(inventory.price)}
       </td>
       {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {centsToDollars(inventory.startPrice)}

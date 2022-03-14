@@ -145,14 +145,14 @@ const Inventory = ({ inventoryData }) => {
                     </div>
                 </div>
             </section>
-            <InventoryModal open={open} setOpen={setOpen} listing={inventory} />
+            <InventoryModal open={open} setOpen={setOpen} inventory={inventory} />
         </>
     );
 };
 
 Inventory.getInitialProps = async (context: NextPageContext, client: any) => {
     try {
-        const { data } = await client.get(`/api/listings/me`);
+        const { data } = await client.get(`/api/inventory/me`);
         return { inventoryData: data };
     } catch (err) {
         console.error(err);

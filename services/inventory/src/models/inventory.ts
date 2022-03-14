@@ -17,6 +17,7 @@ export interface InventoryAttributes {
   massOfItem: number;
   quantity: number;
   paymentConfirmation: Boolean;
+  location: string;
   description: string;
   imageId: string;
   smallImage: string;
@@ -94,6 +95,10 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
       },
       paymentConfirmation: {
         type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      location: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       description: {

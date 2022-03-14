@@ -86,7 +86,7 @@ router.post(
       // }
 
       // @ts-ignore
-      const result = await cloudinary.uploader.upload(req.files.image[0].path,
+      const result = await cloudinary.v2.uploader.upload(req.files.image[0].path,
         {
           eager: [
             { width: 225, height: 225 },
@@ -97,16 +97,15 @@ router.post(
       console.log("result", result);
 
       // @ts-ignore
-      const result1 = await cloudinary.uploader.upload(req.files.sopDocument[0].path,
+      const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
         { resource_type: 'raw' }
       );
       // @ts-ignore
       const sopName = req.files.sopDocument[0].filename;
       // @ts-ignore
       console.log('LAB Reports Result : ', req.files.labReports);
-
       // @ts-ignore
-      const result2 = await cloudinary.uploader.upload(req.files.labReports[0].path,
+      const result2 = await cloudinary.v2.uploader.upload(req.files.labReports[0].path,
         {
           resource_type: 'raw',
         }
@@ -166,6 +165,7 @@ router.post(
           massOfItem,
           quantity,
           paymentConfirmation,
+          location,
           description,
           imageId: result.public_id,
           smallImage: result.eager[0].secure_url,
