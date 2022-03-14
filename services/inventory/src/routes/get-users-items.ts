@@ -1,4 +1,4 @@
-import { requireAuth } from 'scytalelabs-auction';
+import { requireAuth, BadRequestError } from 'scytalelabs-auction';
 
 import express, { Request, Response } from 'express';
 
@@ -13,6 +13,10 @@ router.get(
     const items = await Inventory.findAll({
       where: { userId: req.currentUser.id },
     });
+
+    if(!items){
+      throw new BadRequestError('No item found against this user');
+    }
 
     res.status(200).send(items);
   }

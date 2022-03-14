@@ -22,12 +22,12 @@ app.use(cookieSession({ signed: false, secure: false }));
 app.use(currentUser);
 
 app.use(addItemRouter);
+app.use(getUserItemsRouter);
 app.use(deleteItemRouter);
+app.use(updateItemRouter);
 app.use(getItemRouter);
 app.use(getItemsRouter);
-app.use(updateItemRouter);
 app.use(qrCodeRouter);
-app.use(getUserItemsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

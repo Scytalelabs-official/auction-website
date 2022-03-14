@@ -165,6 +165,7 @@ router.post(
           massOfItem,
           quantity,
           paymentConfirmation,
+          location,
           description,
           imageId: result.public_id,
           smallImage: result.eager[0].secure_url,

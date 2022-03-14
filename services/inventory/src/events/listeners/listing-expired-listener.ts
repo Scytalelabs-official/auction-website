@@ -57,8 +57,12 @@ export class ListingExpiredListener extends Listener<ListingExpiredEvent> {
 
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
       id: item.id,
+      title: item.title,
       status: InventoryStatus.Reserved,
       price: item.price,
+      totalPrice: item.totalPrice,
+      massOfItem: item.massOfItem,
+      description: item.description,
       version: item.version,
     });
     msg.ack();

@@ -63,9 +63,10 @@ export default function InventoryModal(properties) {
       // for (var value of formData.values()) {
       //   console.log(value);
       // }
-      const { data } = await axios.post(`/api/inventory/${properties.listing.id}`, body);
+      const { data } = await axios.post(`/api/inventory/${properties.inventory.id}`, body);
       toast.success('Sucessfully updated items in Inventory!');
-      Router.push(`/listings/${data.slug}`);
+      // Router.push(`/listings/${data.slug}`);
+      Router.push(`/dashboard/inventory`);
     } catch (err) {
       console.log('err', err);
       console.log('err', err.response);
@@ -87,11 +88,11 @@ export default function InventoryModal(properties) {
             Update Inventory
             <Formik
               initialValues={{
-                title: properties.listing.title,
-                description: properties.listing.description,
-                price: properties.listing.currentPrice / 100,
-                massOfItem: properties.listing.massOfItem,
-                quantity: properties.listing.quantity,
+                title: properties.inventory.title,
+                description: properties.inventory.description,
+                price: properties.inventory.price / 100,
+                massOfItem: properties.inventory.massOfItem,
+                quantity: properties.inventory.quantity,
               }}
               validationSchema={validationSchema}
               onSubmit={onSubmit}

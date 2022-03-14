@@ -48,8 +48,12 @@ export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
 
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
       id: item.id,
+      title: item.title,
       status: InventoryStatus.Fulfilled,
       price: item.price,
+      totalPrice: item.totalPrice,
+      massOfItem: item.massOfItem,
+      description: item.description,
       version: item.version,
     });
     msg.ack();
