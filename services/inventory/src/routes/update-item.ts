@@ -45,20 +45,57 @@ router.post(
       const { title, price, massOfItem, quantity, description } = req.body;
       const itemId = req.params.itemId;
 
+      console.log("ITEM ID: ", req.params.itemId);
+      console.log("REQ>BODY : " , req.body);
+
       const item = await Inventory.findOne({
-        include: {
-          model: User,
-        },
         where: { id: itemId },
       });
+
+      console.log("ITEM DATA: " , item);
 
       if (!item) {
         throw new NotFoundError();
       }
-      item.update(
+      let taxByMassOfItem;
+      let salesTax;
+      let exciseRate;
+      if (item.location === 'North California') {
+        taxByMassOfItem = 3;
+        salesTax = 5;
+        exciseRate = 15;
+      } else {
+        taxByMassOfItem = 30;
+        salesTax = 25;
+        exciseRate = 5;
+      }
+      let taxAmount;
+      if (salesTax <= 0 || salesTax >= 100) {
+        // Need consultancy about higher rate
+        throw new BadRequestError('Invalid sales tax rate');
+
+        // throw new BadRequestError('Sales tax ambiguous value given');
+      } else {
+        taxAmount = (salesTax / 100) * price; //https://propakistani.pk/how-to/how-to-calculate-sales-tax/
+      }
+      let exciseprice = (exciseRate / 100) * price;
+      console.log('exciseprice', exciseprice);
+      let massprice = (taxByMassOfItem / 100) * massOfItem;
+      console.log('massprice', massprice);
+      // console.log('price',price);
+      // console.log('exciseprice',exciseprice);
+      // console.log('taxAmount',taxAmount);
+      let sum =
+        Number(price) +
+        Number(exciseprice) +
+        Number(taxAmount) +
+        Number(massprice);
+
+      await item.update(
         {
           title,
           price,
+          totalPrice : sum,
           massOfItem,
           quantity,
           description,
@@ -70,12 +107,12 @@ router.post(
         id: item.id!,
         // userId: req.currentUser!.id,
         // slug: item.slug!,
-        // title,
+        title,
         status : InventoryStatus.Available,
         price,
-        // massOfItem,
-        // description,
-        // createdAt: new Date(Date.now()),
+        totalPrice:sum,
+        massOfItem,
+        description,
         version: item.version!,
       });
 

@@ -44,7 +44,7 @@ export type InventoryStatic = typeof Model & {
 
 const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
   return <InventoryStatic>sequelize.define(
-    'inventory',
+    'inventory_table',
     {
       id: {
         type: DataTypes.UUID,

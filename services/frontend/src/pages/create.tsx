@@ -53,7 +53,7 @@ const validationSchema = Yup.object({
     .required('Required'),
 });
 
-const Inventory = () => {
+const Create = () => {
   const {
     auth: { isAuthenticated },
   } = useContext(AppContext);
@@ -364,4 +364,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default Create;

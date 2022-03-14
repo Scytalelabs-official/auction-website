@@ -13,7 +13,7 @@ import { getItemRouter } from './routes/get-item';
 import { getItemsRouter } from './routes/get-items';
 import { updateItemRouter } from './routes/update-item';
 import { qrCodeRouter } from './routes/qr-code';
-import { getUserInventoryRouter } from './routes/get-users-items';
+import { getUserItemsRouter } from './routes/get-users-items';
 const app = express();
 
 app.set('trust proxy', true);
@@ -22,11 +22,11 @@ app.use(cookieSession({ signed: false, secure: false }));
 app.use(currentUser);
 
 app.use(addItemRouter);
+app.use(getUserItemsRouter);
 app.use(deleteItemRouter);
+app.use(updateItemRouter);
 app.use(getItemRouter);
 app.use(getItemsRouter);
-app.use(getUserInventoryRouter);
-app.use(updateItemRouter);
 app.use(qrCodeRouter);
 
 app.all('*', () => {

@@ -4,13 +4,13 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import Link from 'next/link';
 import Router from 'next/router';
-import React, { useContext, useState ,useEffect} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import xw from 'xwind/macro';
 import * as Yup from 'yup';
 import Countdown from '../../components/Countdown';
-import { centsToDollars } from '../../utils/cents-to-dollars';
+import { centsToDollars } from '../utils/cents-to-dollars';
 import Breadcrumb from '../components/Breadcrumb';
 import Breadcrumbs from '../components/Breadcrumbs';
 import DatePicker from '../components/DatePicker';
@@ -19,6 +19,14 @@ import AppContext from '../context/app-context';
 
 
 
+
+const StyledAnchorTableRowValue = styled.td(xw`
+	text-right 
+	max-w-2xl 
+  hover:underline
+  cursor-pointer
+	text-gray-500
+`);
 
 const StyledErrorMessage = styled.div(xw`
     text-sm
@@ -74,39 +82,39 @@ const StyledImg = styled.img(xw`
 `);
 
 const validationSchema = Yup.object({
-  title: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  description: Yup.string()
-    .max(5000, 'Must be 5000 characters or less')
-    .required('Required'),
-  image: Yup.mixed().required('Required'),
-  sopDocument: Yup.mixed().required('Required'),
-  labReports: Yup.mixed().required('Required'),
+  // title: Yup.string()
+  //   .max(15, 'Must be 15 characters or less')
+  //   .required('Required'),
+  // description: Yup.string()
+  //   .max(5000, 'Must be 5000 characters or less')
+  //   .required('Required'),
+  // image: Yup.mixed().required('Required'),
+  // sopDocument: Yup.mixed().required('Required'),
+  // labReports: Yup.mixed().required('Required'),
   price: Yup.string()
     .matches(
       /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
       'The start price must be a number with at most 2 decimals'
     )
     .required('Required'),
-  fixPrice: Yup.string()
-    .matches(
-      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
-      'The fix price must be a number with at most 2 decimals'
-    )
-    .required('Required'),
-  quantity: Yup.string()
-    .matches(
-      /^\s*-?(\d)*$/,
-      'The quantity must be a Whole number'
-    )
-    .required('Required'),
-  massOfItem: Yup.string()
-    .matches(
-      /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
-      'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
-    )
-    .required('Required'),
+  // fixPrice: Yup.string()
+  //   .matches(
+  //     /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+  //     'The fix price must be a number with at most 2 decimals'
+  //   )
+  //   .required('Required'),
+  // quantity: Yup.string()
+  //   .matches(
+  //     /^\s*-?(\d)*$/,
+  //     'The quantity must be a Whole number'
+  //   )
+  //   .required('Required'),
+  // massOfItem: Yup.string()
+  //   .matches(
+  //     /^\s*-?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/,
+  //     'The mass of Item should not be Zero or less and it must be a number with at most 2 decimals.'
+  //   )
+  //   .required('Required'),
 
   expiresAt: Yup.date()
     .required('Required')
@@ -116,13 +124,14 @@ const validationSchema = Yup.object({
     ),
 });
 
-const Sell = ({listingData}) => {
+const Sell = ({ inventoryData }) => {
   const {
     auth: { isAuthenticated },
   } = useContext(AppContext);
-  console.log("listingData",listingData);
-  
-  const [listing, setListing] = useState(listingData);
+  console.log("inventoryData", inventoryData);
+
+  const [listings, setListings] = useState(inventoryData);
+  const [listing, setListing] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [show, setShow] = useState(false);
   const [options, setOptions] = useState(['North California', 'South California']);
@@ -132,10 +141,12 @@ const Sell = ({listingData}) => {
     setIsSubmitting(true);
 
     try {
-      body.price *= 100;
+      
       // body.fixPrice *= 100;
+      body.price *= 100;
       body.paymentConfirmation = true;
-      // body.location = selectedOption;
+      body.inventoryItemId=listing.id;
+      
       const formData = new FormData();
       console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
@@ -146,9 +157,9 @@ const Sell = ({listingData}) => {
       // for (var value of formData.values()) {
       //   console.log(value);
       // }
-      const { data } = await axios.post('/api/listings', formData);
-      toast.success('Sucessfully listed item for sale!');
-      Router.push(`/listings/${data.slug}`);
+      // const { data } = await axios.post('/api/listings', formData);
+      // toast.success('Sucessfully listed item for sale!');
+      // Router.push(`/listings/${data.slug}`);
     } catch (err) {
       console.log('err', err);
       console.log('err', err.response);
@@ -167,7 +178,7 @@ const Sell = ({listingData}) => {
       />
     );
   }
-useEffect(() => {
+  useEffect(() => {
     const room = listing && listing.slug;
     if (!room) return;
 
@@ -188,7 +199,7 @@ useEffect(() => {
     socket.on('inventory-updated', (data) => {
       setListing(data);
     });
-    
+
 
     return () => socket.emit('unsubscribe', room);
   }, []);
@@ -215,7 +226,7 @@ useEffect(() => {
             // description: '',
             price: '',
             // massOfItem: '',
-            quantity: '',
+            // quantity: '',
             // fixPrice: '',
             expiresAt: '',
             // image: '',
@@ -243,12 +254,12 @@ useEffect(() => {
                       <div className="mt-1 relative">
                         <button type="button" onClick={() => setShow(!show)} className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
                           <span className="flex items-center">
-                            {selectedOption?(
+                            {selectedOption ? (
                               <span className="ml-3 block truncate"> {selectedOption} </span>
-                            ):(
+                            ) : (
                               <span className="ml-3 block truncate"> ---Select Please--- </span>
                             )}
-                            
+
                           </span>
                           <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                             <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -258,17 +269,17 @@ useEffect(() => {
                         </button>
                         {show ? (
                           <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabIndex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
-                            {options.map((opt, idx) => (
+                            {listings.map((opt, idx) => (
                               <li key={idx} onClick={() => {
                                 setShow(false)
-                                setSelectedOption(opt)
+                                setSelectedOption(opt.title)
                                 setListing(opt)
                               }} className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9" id="listbox-option-0" role="option">
                                 {console.log("opt", opt)}
                                 <div className="flex items-center">
-                                  <span className="font-normal ml-3 block truncate"> {opt} </span>
+                                  <span className="font-normal ml-3 block truncate"> {opt.title} </span>
                                 </div>
-                                {opt === selectedOption ? (
+                                {opt.title === selectedOption ? (
                                   <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -467,7 +478,7 @@ useEffect(() => {
                       />
                     </div>
                   </div> */}
-                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
                       htmlFor="quantity"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -485,7 +496,7 @@ useEffect(() => {
                         name="quantity"
                       />
                     </div>
-                  </div>
+                  </div> */}
                   {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
                       htmlFor="massOfItem"
@@ -533,83 +544,58 @@ useEffect(() => {
                   </div>
                 </div>
               </div>
-              {listing ? (<StyledListing>
+              {listing ? (
+              <StyledListing>
+                <br></br>
                 <StyledTextContent>
                   <section className="py-3 mb-3">
                     <h3 className="text-3xl leading-tight font-semibold font-heading">
-                      {/* {listing.title} */}
+                      {listing.title}
                     </h3>
                     <p className="mt-1 max-w-2xl text-l text-gray-500">
-                      {/* {listing.description} */}
+                      {listing.description}
                     </p>
                   </section>
                   <StyledTable>
                     <tbody>
                       <StyledTableRow>
-                        <StyledTableRowName>Total Price</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {/* {centsToDollars(listing.totalPrice)} */}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Current Price</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {/* {centsToDollars(listing.currentPrice)} */}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
                         <StyledTableRowName>Fixed Price</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* {centsToDollars(listing.fixPrice)} */}
+                          {centsToDollars(listing.totalPrice)}
                         </StyledTableRowValue>
                       </StyledTableRow>
                       <StyledTableRow>
                         <StyledTableRowName>Available Quantity</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* {listing.quantity} */}
+                          {listing.quantity}
                         </StyledTableRowValue>
                       </StyledTableRow>
                       <StyledTableRow>
                         <StyledTableRowName>Mass of Item</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* {listing.massOfItem}g */}
+                          {listing.massOfItem}g
                         </StyledTableRowValue>
                       </StyledTableRow>
                       <StyledTableRow>
                         <StyledTableRowName>Location</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* {listing.location} */}
+                          {listing.location}
                         </StyledTableRowValue>
                       </StyledTableRow>
                       <StyledTableRow>
                         <StyledTableRowName>Sop Document</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* <a href={listing.sopDocumentUrl} target="_blank" download style={{ float: 'right' }}>
+                          <a href={listing.sopDocumentUrl} target="_blank" download style={{ float: 'right' }}>
                             <img src="/images/download.svg"></img>
-                          </a> */}
+                          </a>
                         </StyledTableRowValue>
                       </StyledTableRow>
                       <StyledTableRow>
                         <StyledTableRowName>Lab Reports</StyledTableRowName>
                         <StyledTableRowValue>
-                          {/* <a href={listing.labReportUrl} target="_blank" download style={{ float: 'right' }}>
+                          <a href={listing.labReportUrl} target="_blank" download style={{ float: 'right' }}>
                             <img src="/images/download.svg"></img>
-                          </a> */}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        <StyledTableRowName>Seller</StyledTableRowName>
-                        {/* <Link href={`/profile/${listing.user.name}`}>
-                          <StyledAnchorTableRowValue>
-                            {listing.user.name}
-                          </StyledAnchorTableRowValue>
-                        </Link> */}
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Time Left</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {/* <Countdown expiresAt={listing.expiresAt} /> */}
+                          </a>
                         </StyledTableRowValue>
                       </StyledTableRow>
                     </tbody>
@@ -673,7 +659,7 @@ useEffect(() => {
                   </Formik>
                 </StyledTextContent>
                 <StyledImgContainer>
-                  {/* <StyledImg src={listing.largeImage} alt="Product Image" /> */}
+                  <StyledImg src={listing.largeImage} alt="Product Image" />
                 </StyledImgContainer>
               </StyledListing>) : (null)}
 
@@ -697,13 +683,13 @@ useEffect(() => {
 };
 Sell.getInitialProps = async (context: NextPageContext, client: any) => {
   try {
-    const { data } = await client.get(`/api/inventory`);
-    console.log("data",data);
-    
-    return { listingData: data };
+    const { data } = await client.get(`/api/inventory/me`);
+    console.log("data", data);
+
+    return { inventoryData: data };
   } catch (err) {
     console.error(err);
-    return { listingData: null };
+    return { inventoryData: null };
   }
 };
 

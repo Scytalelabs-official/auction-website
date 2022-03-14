@@ -54,9 +54,13 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
 
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
       id: inventoryItemId,
+      title,
       status: InventoryStatus.Listed,
-      price: listing.currentPrice,
-      version: listing.version,
+      price,
+      totalPrice: item.totalPrice,
+      massOfItem: item.massOfItem,
+      description: item.description,
+      version: item.version!,
     });
 
     await socketIOWrapper.io

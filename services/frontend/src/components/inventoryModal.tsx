@@ -59,11 +59,13 @@ export default function InventoryModal(properties) {
       body.price *= 100;
       // const formData = new FormData();
       console.log('body', body);
+      console.log("properties",properties);
+      
       // Object.keys(body).forEach((key) => formData.append(key, body[key]));
       // for (var value of formData.values()) {
       //   console.log(value);
       // }
-      const { data } = await axios.post(`/api/inventory/${properties.inventory.id}`, body);
+      await axios.post(`/api/inventory/${properties.inventory.id}`, body);
       toast.success('Sucessfully updated items in Inventory!');
       // Router.push(`/listings/${data.slug}`);
       Router.push(`/dashboard/inventory`);
@@ -146,7 +148,7 @@ export default function InventoryModal(properties) {
                           htmlFor="price"
                           className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                         >
-                          Start Price
+                          Fix Price
                         </label>
                         <div className="mt-1 sm:mt-0 sm:col-span-2">
                           <Field
