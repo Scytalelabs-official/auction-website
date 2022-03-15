@@ -14,6 +14,16 @@ export interface InventoryAttributes {
   quantity: number;
   massOfItem: number;
   description: string;
+  location: string;
+  imageId: string;
+  smallImage: string;
+  largeImage: string;
+  sopDocumentId: string;
+  sopDocumentName: string;
+  sopDocumentUrl: string;
+  labReportId: string;
+  labReportName: string;
+  labReportUrl: string;
   createdAt?: Date;
   version?: number;
 }
@@ -71,6 +81,47 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      smallImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      largeImage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sopDocumentUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      labReportUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

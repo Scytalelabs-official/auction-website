@@ -141,12 +141,12 @@ const Sell = ({ inventoryData }) => {
     setIsSubmitting(true);
 
     try {
-      
+
       // body.fixPrice *= 100;
       body.price *= 100;
       body.paymentConfirmation = true;
-      body.inventoryItemId=listing.id;
-      
+      body.inventoryItemId = listing.id;
+
       const formData = new FormData();
       console.log('body', body);
       Object.keys(body).forEach((key) => formData.append(key, body[key]));
@@ -157,9 +157,9 @@ const Sell = ({ inventoryData }) => {
       // for (var value of formData.values()) {
       //   console.log(value);
       // }
-      // const { data } = await axios.post('/api/listings', formData);
-      // toast.success('Sucessfully listed item for sale!');
-      // Router.push(`/listings/${data.slug}`);
+      const { data } = await axios.post('/api/listings', body);
+      toast.success('Sucessfully listed item for sale!');
+      Router.push(`/listings/${data.slug}`);
     } catch (err) {
       console.log('err', err);
       console.log('err', err.response);
@@ -270,24 +270,27 @@ const Sell = ({ inventoryData }) => {
                         {show ? (
                           <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabIndex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
                             {listings.map((opt, idx) => (
-                              <li key={idx} onClick={() => {
-                                setShow(false)
-                                setSelectedOption(opt.title)
-                                setListing(opt)
-                              }} className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9" id="listbox-option-0" role="option">
-                                {console.log("opt", opt)}
-                                <div className="flex items-center">
-                                  <span className="font-normal ml-3 block truncate"> {opt.title} </span>
-                                </div>
-                                {opt.title === selectedOption ? (
-                                  <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
-                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                  </span>
-                                ) : (null)}
+                              opt.status === "Available" ? (
+                                <li key={idx} onClick={() => {
+                                  setShow(false)
+                                  setSelectedOption(opt.title)
+                                  setListing(opt)
+                                }} className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9" id="listbox-option-0" role="option">
+                                  {console.log("opt", opt)}
+                                  <div className="flex items-center">
+                                    <span className="font-normal ml-3 block truncate"> {opt.title} </span>
+                                  </div>
+                                  {opt.title === selectedOption ? (
+                                    <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
+                                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                    </span>
+                                  ) : (null)}
 
-                              </li>
+                                </li>
+                              ) : (null)
+
                             ))}
 
                           </ul>
@@ -545,71 +548,71 @@ const Sell = ({ inventoryData }) => {
                 </div>
               </div>
               {listing ? (
-              <StyledListing>
-                <br></br>
-                <StyledTextContent>
-                  <section className="py-3 mb-3">
-                    <h3 className="text-3xl leading-tight font-semibold font-heading">
-                      {listing.title}
-                    </h3>
-                    <p className="mt-1 max-w-2xl text-l text-gray-500">
-                      {listing.description}
-                    </p>
-                  </section>
-                  <StyledTable>
-                    <tbody>
-                      <StyledTableRow>
-                        <StyledTableRowName>Fixed Price</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {centsToDollars(listing.totalPrice)}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Available Quantity</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {listing.quantity}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Mass of Item</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {listing.massOfItem}g
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Location</StyledTableRowName>
-                        <StyledTableRowValue>
-                          {listing.location}
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Sop Document</StyledTableRowName>
-                        <StyledTableRowValue>
-                          <a href={listing.sopDocumentUrl} target="_blank" download style={{ float: 'right' }}>
-                            <img src="/images/download.svg"></img>
-                          </a>
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableRowName>Lab Reports</StyledTableRowName>
-                        <StyledTableRowValue>
-                          <a href={listing.labReportUrl} target="_blank" download style={{ float: 'right' }}>
-                            <img src="/images/download.svg"></img>
-                          </a>
-                        </StyledTableRowValue>
-                      </StyledTableRow>
-                    </tbody>
-                  </StyledTable>
-                  <Formik
-                    initialValues={{
-                      amount: '',
-                    }}
-                    validationSchema={validationSchema}
-                    onSubmit={onSubmit}
-                  >
-                    <Form>
-                      <div className="mt-1 flex rounded-md shadow-sm">
-                        {/* <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                <StyledListing>
+                  <br></br>
+                  <StyledTextContent>
+                    <section className="py-3 mb-3">
+                      <h3 className="text-3xl leading-tight font-semibold font-heading">
+                        {listing.title}
+                      </h3>
+                      <p className="mt-1 max-w-2xl text-l text-gray-500">
+                        {listing.description}
+                      </p>
+                    </section>
+                    <StyledTable>
+                      <tbody>
+                        <StyledTableRow>
+                          <StyledTableRowName>Fixed Price</StyledTableRowName>
+                          <StyledTableRowValue>
+                            {centsToDollars(listing.totalPrice)}
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableRowName>Available Quantity</StyledTableRowName>
+                          <StyledTableRowValue>
+                            {listing.quantity}
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableRowName>Mass of Item</StyledTableRowName>
+                          <StyledTableRowValue>
+                            {listing.massOfItem}g
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableRowName>Location</StyledTableRowName>
+                          <StyledTableRowValue>
+                            {listing.location}
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableRowName>Sop Document</StyledTableRowName>
+                          <StyledTableRowValue>
+                            <a href={listing.sopDocumentUrl} target="_blank" download style={{ float: 'right' }}>
+                              <img src="/images/download.svg"></img>
+                            </a>
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableRowName>Lab Reports</StyledTableRowName>
+                          <StyledTableRowValue>
+                            <a href={listing.labReportUrl} target="_blank" download style={{ float: 'right' }}>
+                              <img src="/images/download.svg"></img>
+                            </a>
+                          </StyledTableRowValue>
+                        </StyledTableRow>
+                      </tbody>
+                    </StyledTable>
+                    <Formik
+                      initialValues={{
+                        amount: '',
+                      }}
+                      validationSchema={validationSchema}
+                      onSubmit={onSubmit}
+                    >
+                      <Form>
+                        <div className="mt-1 flex rounded-md shadow-sm">
+                          {/* <div className="relative flex items-stretch flex-grow focus-within:z-10">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 sm:text-sm">$</span>
                           </div>
@@ -620,19 +623,19 @@ const Sell = ({ inventoryData }) => {
                             placeholder="Amount to bid"
                           />
                         </div> */}
-                        {/* <button
+                          {/* <button
                           type="submit"
                           className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                         >
                           {isBidding ? 'Placing bid...' : 'Bid now!'}
                         </button> */}
-                      </div>
-                      <ErrorMessage component={StyledErrorMessage} name="amount" />
-                      {/* <div style={{ justifyContent: 'center' }} className="flex items-center pointer-events-none">
+                        </div>
+                        <ErrorMessage component={StyledErrorMessage} name="amount" />
+                        {/* <div style={{ justifyContent: 'center' }} className="flex items-center pointer-events-none">
                 <span className="text-gray-500 sm:text-sm">or</span>
               </div> */}
 
-                      {/* <div className="mt-1 flex rounded-md shadow-sm">
+                        {/* <div className="mt-1 flex rounded-md shadow-sm">
                 <div className="relative flex items-stretch flex-grow focus-within:z-10">
                   <Field
                     type="text"
@@ -654,14 +657,14 @@ const Sell = ({ inventoryData }) => {
                   {isBuying ? 'Buying...' : 'Buy now!'}
                 </button>
               </div> */}
-                      <ErrorMessage component={StyledErrorMessage} name="quantity" />
-                    </Form>
-                  </Formik>
-                </StyledTextContent>
-                <StyledImgContainer>
-                  <StyledImg src={listing.largeImage} alt="Product Image" />
-                </StyledImgContainer>
-              </StyledListing>) : (null)}
+                        <ErrorMessage component={StyledErrorMessage} name="quantity" />
+                      </Form>
+                    </Formik>
+                  </StyledTextContent>
+                  <StyledImgContainer>
+                    <StyledImg src={listing.largeImage} alt="Product Image" />
+                  </StyledImgContainer>
+                </StyledListing>) : (null)}
 
 
               <div className="pt-5">

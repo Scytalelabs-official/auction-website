@@ -18,7 +18,7 @@ const StyledInventory = styled.div(xw`
 const Inventory = ({ inventories }) => {
   return (
     <>
-    {console.log("inventories",inventories)}
+      {console.log("inventories", inventories)}
       <Head>
         <title> Browsing Inventory | auctionweb.site</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -39,13 +39,15 @@ const Inventory = ({ inventories }) => {
       </section>
       <StyledInventory>
         {inventories.map((inventory, idx) => (
-          <InventoryCard
-            key={idx}
-            name={inventory.title}
-            price={inventory.totalPrice}
-            smallImage={inventory.smallImage}
-            slug={`/inventory/${inventory.id}`}
-          />
+          inventory.status === "Available" ? (
+            <InventoryCard
+              key={idx}
+              name={inventory.title}
+              price={inventory.totalPrice}
+              smallImage={inventory.smallImage}
+              slug={`/inventory/${inventory.id}`}
+            />
+          ) : (null)
         ))}
       </StyledInventory>
     </>
@@ -55,7 +57,7 @@ const Inventory = ({ inventories }) => {
 Inventory.getInitialProps = async ({ query }, client) => {
   const { data } = await client.get(`/api/inventory`);
 
-  return { inventories: data || []};
+  return { inventories: data || [] };
 };
 
 export default Inventory;

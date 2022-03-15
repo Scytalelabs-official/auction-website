@@ -40,6 +40,16 @@ export class InventoryItemCreatedListener extends Listener<InventoryItemCreatedE
       quantity,
       massOfItem,
       description,
+      location,
+      imageId,
+      smallImage,
+      largeImage,
+      sopDocumentId,
+      sopDocumentName,
+      sopDocumentUrl,
+      labReportId,
+      labReportName,
+      labReportUrl,
     } = data;
 
     const inventory = await Inventory.create({
@@ -51,7 +61,17 @@ export class InventoryItemCreatedListener extends Listener<InventoryItemCreatedE
       quantity,
       massOfItem,
       description,
+      location,
       status: InventoryStatus.Available,
+      imageId,
+      smallImage,
+      largeImage,
+      sopDocumentId,
+      sopDocumentName,
+      sopDocumentUrl,
+      labReportId,
+      labReportName,
+      labReportUrl,
     });
 
     // new InventoryItemUpdatedPublisher(natsWrapper.client).publish({

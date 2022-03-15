@@ -68,6 +68,10 @@ export default function InventoryModal(properties) {
       await axios.post(`/api/inventory/${properties.inventory.id}`, body);
       toast.success('Sucessfully updated items in Inventory!');
       // Router.push(`/listings/${data.slug}`);
+      const { data } = await axios.get(`/api/inventory/me`);
+      console.log('data',data);
+      
+      properties.setInventories(data)
       Router.push(`/dashboard/inventory`);
     } catch (err) {
       console.log('err', err);
@@ -217,7 +221,7 @@ export default function InventoryModal(properties) {
                         onClick={() => properties.setOpen(false)}
                         className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
-                        {'Cancel'}
+                        {'Close'}
                       </button>
                       <button
                         type="submit"
