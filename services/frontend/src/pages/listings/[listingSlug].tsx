@@ -204,14 +204,14 @@ const Listing = ({ listingData }) => {
           </section>
           <StyledTable>
             <tbody>
-              <StyledTableRow>
+              {/* <StyledTableRow>
                 <StyledTableRowName>Total Price</StyledTableRowName>
                 <StyledTableRowValue>
                   {centsToDollars(listing.totalPrice)}
                 </StyledTableRowValue>
-              </StyledTableRow>
+              </StyledTableRow> */}
               <StyledTableRow>
-                <StyledTableRowName>Current Price</StyledTableRowName>
+                <StyledTableRowName>Current Bid</StyledTableRowName>
                 <StyledTableRowValue>
                   {centsToDollars(listing.currentPrice)}
                 </StyledTableRowValue>
@@ -228,12 +228,12 @@ const Listing = ({ listingData }) => {
                   {listing.quantity}
                 </StyledTableRowValue>
               </StyledTableRow>
-              <StyledTableRow>
+              {/* <StyledTableRow>
                 <StyledTableRowName>Mass of Item</StyledTableRowName>
                 <StyledTableRowValue>
                   {listing.massOfItem}g
                 </StyledTableRowValue>
-              </StyledTableRow>
+              </StyledTableRow> */}
               <StyledTableRow>
                 <StyledTableRowName>Location</StyledTableRowName>
                 <StyledTableRowValue>

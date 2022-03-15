@@ -21,14 +21,11 @@ router.post(
     body('amount')
       .isFloat({ gt: 0 })
       .withMessage('Amount must be greater than 0'),
-    body('quantity')
-      .isFloat({ gt: 0 })
-      .withMessage('Quantity must be greater than 0'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     await db.transaction(async (transaction) => {
-      const { amount, /*quantity,*/ user } = req.body;
+      const { amount, user } = req.body;
       const itemId = req.params.itemId;
 
       const item = await Inventory.findOne({
@@ -39,15 +36,22 @@ router.post(
         throw new NotFoundError();
       }
 
+
       // if (item.quantity < quantity) {
       //   throw new BadRequestError(
       //     'Buying quantity must be less than the listing quantity'
       //   );
       // }
 
+
       if(amount< item.totalPrice){
         throw new BadRequestError(
           'Amount less than the total price of the item'
+        );
+      }
+      if (req.currentUser!.id === item.userId) {
+        throw new BadRequestError(
+          'Sellers cannot buy there own items'
         );
       }
       const direct_buy = await DirectBuy.create(
