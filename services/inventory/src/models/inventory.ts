@@ -141,7 +141,6 @@ const InventoryFactory = (sequelize: Sequelize): InventoryStatic => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

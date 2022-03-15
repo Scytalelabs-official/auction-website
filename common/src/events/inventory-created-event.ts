@@ -14,6 +14,16 @@ export interface InventoryItemCreatedEvent {
     quantity: number;
     massOfItem: number;
     description: string;
+    location: string;
+    imageId: string;
+    smallImage: string;
+    largeImage: string;
+    sopDocumentId: string;
+    sopDocumentName: string;
+    sopDocumentUrl: string;
+    labReportId: string;
+    labReportName: string;
+    labReportUrl: string;
     createdAt: Date;
     version: number;
   };

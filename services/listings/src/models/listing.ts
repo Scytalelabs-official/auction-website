@@ -17,14 +17,14 @@ export interface ListingAttributes {
   fixPrice?: number;
   paymentConfirmation: Boolean;
   massOfItem?: number;
-  taxByMassOfItem?: number;
-  salesTax?: number;
-  exciseRate?: number;
+  // taxByMassOfItem?: number;
+  // salesTax?: number;
+  // exciseRate?: number;
   totalPrice?: number;
   /******/
   userId?: string;
   title?: string;
-  location: string;
+  // location: string;
   description?: string;
   imageId: string;
   smallImage: string;
@@ -76,25 +76,25 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         allowNull: false,
       },
 
-      massOfItem: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+      // massOfItem: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      // },
 
-      taxByMassOfItem: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
+      // taxByMassOfItem: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: true,
+      // },
 
-      salesTax: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+      // salesTax: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      // },
 
-      exciseRate: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
+      // exciseRate: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: true,
+      // },
       totalPrice: {
         type: DataTypes.INTEGER,
         allowNull: false,
