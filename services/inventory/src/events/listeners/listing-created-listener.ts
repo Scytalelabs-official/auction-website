@@ -52,6 +52,10 @@ export class ListingCreatedListener extends Listener<ListingCreatedEvent> {
       status: ListingStatus.Active,
     });
 
+    await item.update({
+      status:InventoryStatus.Listed
+    });
+
     new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
       id: inventoryItemId,
       title,

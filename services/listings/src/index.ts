@@ -99,7 +99,9 @@ import { socketIOWrapper } from './socket-io-wrapper';
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     await db.authenticate();
-    await db.sync();
+    await db.query('SET FOREIGN_KEY_CHECKS = 0', {raw: true});
+    await db.sync({ force: true });
+    await db.query('SET FOREIGN_KEY_CHECKS = 1', {raw: true});
     console.log('Conneted to MySQL');
 
     const server = app.listen(3000, () =>
