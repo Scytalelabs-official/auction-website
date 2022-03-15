@@ -76,10 +76,10 @@ const ListingFactory = (sequelize: Sequelize): ListingStatic => {
         allowNull: false,
       },
 
-      // massOfItem: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      // },
+      massOfItem: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
 
       // taxByMassOfItem: {
       //   type: DataTypes.INTEGER,

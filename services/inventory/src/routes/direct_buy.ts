@@ -21,9 +21,9 @@ router.post(
     body('amount')
       .isFloat({ gt: 0 })
       .withMessage('Amount must be greater than 0'),
-    body('quantity')
-      .isFloat({ gt: 0 })
-      .withMessage('Quantity must be greater than 0'),
+    // body('quantity')
+    //   .isFloat({ gt: 0 })
+    //   .withMessage('Quantity must be greater than 0'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -50,6 +50,11 @@ router.post(
           'Amount less than the total price of the item'
         );
       }
+      if (req.currentUser!.id === item.userId) {
+        throw new BadRequestError(
+          'Sellers cannot buy on there own items'
+        );
+      }
       const direct_buy = await DirectBuy.create(
         {
           inventoryItemId: item.id,
@@ -63,6 +68,7 @@ router.post(
 
       // const bought = Number(item.quantity) - Number(quantity);
       await item.update({
+        userId: req.currentUser.id,
         status: InventoryStatus.Fulfilled,
       });
       new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
