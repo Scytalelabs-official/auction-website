@@ -85,8 +85,6 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     await db.transaction(async (transaction) => {
-      console.log("req.body",req.body);
-      
       const {
         price,
         // title,
@@ -215,7 +213,7 @@ router.post(
           quantity: item.quantity,
           fixPrice: item.fixPrice,
           title: item.title,
-          // location: item.location,
+          location: item.location,
           description: item.description,
           expiresAt,
           imageId: item.imageId,

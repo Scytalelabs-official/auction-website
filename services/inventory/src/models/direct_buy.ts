@@ -2,7 +2,7 @@ import { BuildOptions, DataTypes, Model, Sequelize, UUIDV4 } from 'sequelize';
 
 export interface DirectBuyAttributes {
   id?: string;
-  listingId: string;
+  inventoryItemId: string;
   userId: string;
   title: string;
   quantity: number;
@@ -31,7 +31,7 @@ const DirectBuyFactory = (sequelize: Sequelize): DirectBuyStatic => {
         unique: true,
         primaryKey: true,
       },
-      listingId: {
+      inventoryItemId: {
         type: DataTypes.UUID,
         allowNull: false,
       },

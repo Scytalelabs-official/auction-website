@@ -2,10 +2,12 @@ import styled from '@emotion/styled';
 import Head from 'next/head';
 import React from 'react';
 import xw from 'xwind/macro';
-
 import Breadcrumb from '../../components/Breadcrumb';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import InventoryCard from '../../components/InventoryCard';
+import InventorySoldCard from '../../components/InventorySoldCard';
+
+
 
 const StyledInventory = styled.div(xw`
 	py-3
@@ -47,7 +49,15 @@ const Inventory = ({ inventories }) => {
               smallImage={inventory.smallImage}
               slug={`/inventory/${inventory.id}`}
             />
-          ) : (null)
+          ) : (
+            <InventorySoldCard
+              key={idx}
+              name={inventory.title}
+              price={inventory.totalPrice}
+              smallImage={inventory.smallImage}
+              status={inventory.status}
+            />
+          )
         ))}
       </StyledInventory>
     </>
@@ -55,9 +65,13 @@ const Inventory = ({ inventories }) => {
 };
 
 Inventory.getInitialProps = async ({ query }, client) => {
-  const { data } = await client.get(`/api/inventory`);
-
-  return { inventories: data || [] };
+  try {
+    const { data } = await client.get(`/api/inventory`);
+    return { inventories: data };
+  } catch (err) {
+    console.error(err);
+    return { inventories: [] };
+  }
 };
 
 export default Inventory;

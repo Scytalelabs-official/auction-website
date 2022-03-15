@@ -692,7 +692,7 @@ Sell.getInitialProps = async (context: NextPageContext, client: any) => {
     return { inventoryData: data };
   } catch (err) {
     console.error(err);
-    return { inventoryData: null };
+    return { inventoryData: [] };
   }
 };
 

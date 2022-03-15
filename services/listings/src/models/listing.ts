@@ -24,7 +24,7 @@ export interface ListingAttributes {
   /******/
   userId?: string;
   title?: string;
-  // location: string;
+  location: string;
   description?: string;
   imageId: string;
   smallImage: string;

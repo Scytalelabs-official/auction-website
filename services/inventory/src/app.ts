@@ -14,6 +14,8 @@ import { getItemsRouter } from './routes/get-items';
 import { updateItemRouter } from './routes/update-item';
 import { qrCodeRouter } from './routes/qr-code';
 import { getUserItemsRouter } from './routes/get-users-items';
+import { directBuyRouter } from './routes/direct_buy';
+
 const app = express();
 
 app.set('trust proxy', true);
@@ -28,6 +30,7 @@ app.use(updateItemRouter);
 app.use(getItemRouter);
 app.use(getItemsRouter);
 app.use(qrCodeRouter);
+app.use(directBuyRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

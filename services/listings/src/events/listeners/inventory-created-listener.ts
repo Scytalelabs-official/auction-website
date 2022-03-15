@@ -52,7 +52,7 @@ export class InventoryItemCreatedListener extends Listener<InventoryItemCreatedE
       labReportUrl,
     } = data;
 
-    const inventory = await Inventory.create({
+    await Inventory.create({
       id,
       userId,
       title,
@@ -74,17 +74,10 @@ export class InventoryItemCreatedListener extends Listener<InventoryItemCreatedE
       labReportUrl,
     });
 
-    // new InventoryItemUpdatedPublisher(natsWrapper.client).publish({
-    //   id: listing.id,
-    //   status: InventoryStatus.Listed,
-    //   price: listing.currentPrice,
-    //   version: listing.version,
-    // });
-
-    await socketIOWrapper.io
-      .of('/socket')
-      .to(inventory.id)
-      .emit('inventory', inventory);
+    // await socketIOWrapper.io
+    //   .of('/socket')
+    //   .to(inventory.id)
+    //   .emit('inventory', inventory);
 
     msg.ack();
   }
