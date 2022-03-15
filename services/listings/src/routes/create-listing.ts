@@ -213,7 +213,7 @@ router.post(
           quantity: item.quantity,
           fixPrice: item.fixPrice,
           title: item.title,
-          // location: item.location,
+          location: item.location,
           description: item.description,
           expiresAt,
           imageId: item.imageId,

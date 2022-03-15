@@ -12,7 +12,7 @@ import { getListingRouter } from './routes/get-listing';
 import { getListingsRouter } from './routes/get-listings';
 import { getSoldListingsRouter } from './routes/get-sold-listings';
 import { getUserListingsRouter } from './routes/get-users-listings';
-import { directBuyRouter } from './routes/direct_buy';
+// import { directBuyRouter } from './routes/direct_buy';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(getSoldListingsRouter);
 app.use(getExpiredListingsRouter);
 app.use(getUserListingsRouter);
 app.use(getListingRouter);
-app.use(directBuyRouter);
+// app.use(directBuyRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

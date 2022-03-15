@@ -165,11 +165,12 @@ const Navbar = () => {
             <StyledDesktopNavigationTabs>
               <NavbarTab href="/" name="Home" />
               <NavbarTab href="/listings" name="Browse Listings" />
+              <NavbarTab href="/inventory" name="Browse Inventory" />
               {isAuthenticated && (
                 <NavbarTab href="/sell" name="Sell an Item" />
               )}
               {isAuthenticated && (
-                <NavbarTab href="/inventory" name="Create Inventory" />
+                <NavbarTab href="/create" name="Create Inventory" />
               )}
             </StyledDesktopNavigationTabs>
           </StyledDesktopNavigationTabsContainer>
@@ -200,8 +201,9 @@ const Navbar = () => {
           <StyledMobileNavigationTabsContainer>
             <NavbarTab href="/" name="Home" />
             <NavbarTab href="/listings" name="Browse Listings" />
+            <NavbarTab href="/inventory" name="Browse Inventory" />
             {isAuthenticated && <NavbarTab href="/sell" name="Sell an Item" />}
-            {isAuthenticated && <NavbarTab href="/inventory" name="Create Inventory" />}
+            {isAuthenticated && <NavbarTab href="/create" name="Create Inventory" />}
           </StyledMobileNavigationTabsContainer>
           <StyledMobileContent>
             {isAuthenticated && (

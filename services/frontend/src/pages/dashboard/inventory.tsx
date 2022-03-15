@@ -25,7 +25,7 @@ const Inventory = ({ inventoryData }) => {
 
     const onDelete = async (inventoryId) => {
         try {
-            await axios.delete(`/api/inventories/${inventoryId}`);
+            await axios.delete(`/api/inventory/${inventoryId}`);
             setInventories(inventories.filter((inventory) => inventory.id !== inventoryId));
             toast.success('Sucessfully deleted inventory!');
         } catch (err) {
@@ -145,7 +145,7 @@ const Inventory = ({ inventoryData }) => {
                     </div>
                 </div>
             </section>
-            <InventoryModal open={open} setOpen={setOpen} inventory={inventory} />
+            <InventoryModal open={open} setOpen={setOpen} inventory={inventory} setInventories={setInventories} />
         </>
     );
 };
