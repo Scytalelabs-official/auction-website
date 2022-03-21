@@ -52,7 +52,7 @@ router.post(
       }
       if (req.currentUser!.id === item.userId) {
         throw new BadRequestError(
-          'Sellers cannot buy on there own items'
+          'Sellers cannot buy there own items'
         );
       }
       const direct_buy = await DirectBuy.create(

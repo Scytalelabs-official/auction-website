@@ -94,7 +94,7 @@ router.post(
           ],
         }
       );
-      console.log("result", result);
+      console.log('result', result);
 
       // @ts-ignore
       const result1 = await cloudinary.v2.uploader.upload(req.files.sopDocument[0].path,
@@ -115,14 +115,24 @@ router.post(
       let taxByMassOfItem;
       let salesTax;
       let exciseRate;
+      let cultivationTax;
+      let extractionTax;
+      let concentrateTax;
+
       if (location === 'North California') {
         taxByMassOfItem = 3;
         salesTax = 5;
         exciseRate = 15;
+        cultivationTax = 1;
+        extractionTax = 1;
+        concentrateTax = 1;
       } else {
         taxByMassOfItem = 30;
         salesTax = 25;
         exciseRate = 5;
+        cultivationTax = 1;
+        extractionTax = 1;
+        concentrateTax = 1;
       }
       let taxAmount;
       if (salesTax <= 0 || salesTax >= 100) {
@@ -144,6 +154,16 @@ router.post(
 
       let exciseprice = (exciseRate / 100) * price;
       console.log('exciseprice', exciseprice);
+
+      let cultivationPrice = (cultivationTax / 100) * price;
+      console.log('cultivationTax', cultivationPrice);
+
+      let extractionPrice = (extractionTax / 100) * price;
+      console.log('exciseprice', extractionPrice);
+
+      let concentratePrice = (concentrateTax / 100) * price;
+      console.log('exciseprice', concentratePrice);
+
       let massprice = (taxByMassOfItem / 100) * massOfItem;
       console.log('massprice', massprice);
       // console.log('price',price);
@@ -152,6 +172,9 @@ router.post(
       let sum =
         Number(price) +
         Number(exciseprice) +
+        Number(cultivationPrice) +
+        Number(extractionPrice) +
+        Number(concentratePrice) +
         Number(taxAmount) +
         Number(massprice);
       const item = await Inventory.create(
